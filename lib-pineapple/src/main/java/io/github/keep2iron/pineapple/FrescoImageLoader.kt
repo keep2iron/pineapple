@@ -34,7 +34,6 @@ import com.facebook.imagepipeline.datasource.BaseBitmapDataSubscriber
 import com.facebook.imagepipeline.decoder.SimpleProgressiveJpegConfig
 import com.facebook.imagepipeline.image.ImageInfo
 import com.facebook.imagepipeline.postprocessors.IterativeBoxBlurPostProcessor
-import io.github.keep2iron.imageloader.MiddlewareView
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 

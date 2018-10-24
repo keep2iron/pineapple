@@ -4,7 +4,6 @@ import android.app.Application
 import android.content.Context
 import android.graphics.Bitmap
 import android.net.Uri
-import io.github.keep2iron.imageloader.MiddlewareView
 
 /**
  *

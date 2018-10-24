@@ -1,8 +1,8 @@
-package io.github.keep2iron.imageloader
+package io.github.keep2iron.pineapple
 
 import android.content.Context
 import android.util.AttributeSet
-import io.github.keep2iron.imageloader.MiddlewareView
+import io.github.keep2iron.pineapple.MiddlewareView
 
 /**
  *

@@ -1,7 +1,6 @@
 package io.github.keep2iron.pineapple
 
 import android.databinding.BindingAdapter
-import io.github.keep2iron.imageloader.MiddlewareView
 
 /**
  * @author keep2iron [Contract me.](http://keep2iron.github.io)
