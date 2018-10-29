@@ -13,11 +13,8 @@ import android.net.Uri
  *
  * 相当于ImageLoader的代理
  */
-class ImageLoaderManager(private val imageLoader: ImageLoader, application: Application) : ImageLoader {
-
-    init {
-        this.init(application)
-    }
+class ImageLoaderManager private constructor(private val imageLoader: ImageLoader) :
+    ImageLoader {
 
     override fun init(context: Application) {
         imageLoader.init(context)
@@ -49,5 +46,21 @@ class ImageLoaderManager(private val imageLoader: ImageLoader, application: Appl
 
     override fun clearAllCache() {
         imageLoader.clearAllCache()
+    }
+
+    companion object {
+
+        @JvmStatic
+        fun init(application: Application, imageLoader: ImageLoader = ImageLoaderManager.FRESCO) {
+            ImageLoaderManager.INSTANCE = ImageLoaderManager(imageLoader)
+            ImageLoaderManager.INSTANCE.init(application)
+        }
+
+        lateinit var INSTANCE: ImageLoaderManager
+
+        @JvmStatic
+        private val FRESCO: ImageLoader by lazy(mode = LazyThreadSafetyMode.SYNCHRONIZED) {
+            FrescoImageLoader()
+        }
     }
 }

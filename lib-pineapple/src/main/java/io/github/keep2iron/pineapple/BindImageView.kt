@@ -10,9 +10,18 @@ import android.databinding.BindingAdapter
 object BindImageView {
 
     @JvmStatic
-    @BindingAdapter("url", requireAll = true)
-    fun bindImageViewByUrl(view: MiddlewareView, url: String) {
-        val imageLoader = ImageLoaderManager.getImageLoader()
-        imageLoader.showImageView(view, url = url)
+    @BindingAdapter("url", "scaleType",requireAll = false)
+    fun bindImageViewByUrl(
+        view: MiddlewareView,
+        url: String?,
+        scaleType: ImageLoaderOptions.ScaleType?
+    ) {
+        val imageLoader = ImageLoaderManager.INSTANCE
+        url?.apply {
+            imageLoader.showImageView(view, this, ImageLoaderOptions().apply {
+                this.scaleType = scaleType ?: ImageLoaderOptions.ScaleType.CENTER_CROP
+                isProgressiveLoadImage = true
+            })
+        }
     }
 }

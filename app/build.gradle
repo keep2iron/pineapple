@@ -1,12 +1,13 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
 
 android {
     compileSdkVersion versions.build.target_sdk
     buildToolsVersion versions.build.build_tools
 
     defaultConfig {
-        applicationId "io.github.keep2iron.pineapple"
+        applicationId "io.github.keep2iron.pineapple.app"
         minSdkVersion versions.build.min_sdk
         targetSdkVersion versions.build.target_sdk
         versionCode 1
@@ -19,6 +20,9 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    dataBinding {
+        enabled true
+    }
 }
 
 dependencies {
@@ -26,8 +30,13 @@ dependencies {
     implementation deps.kotlin.stdlib_jdk7
     implementation deps.support.app_compat
     implementation deps.support.constraint_layout
+    implementation deps.support.recyclerview
+    kapt deps.kotlin_databinding_compiler
+    implementation deps.fresco
 
-    implementation project(':lib-pineapple')
+//    implementation 'com.github.keep2iron:pineapple:0.1.1'
+
+    api project(':lib-pineapple')
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'

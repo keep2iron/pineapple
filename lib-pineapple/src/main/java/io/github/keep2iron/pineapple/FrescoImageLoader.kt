@@ -47,12 +47,14 @@ private class ExecutorManager private constructor() {
 
 class MatrixScaleType(private val matrix: Matrix) : ScalingUtils.ScaleType {
 
-    override fun getTransform(outTransform: Matrix,
-                              parentBounds: Rect,
-                              childWidth: Int,
-                              childHeight: Int,
-                              focusX: Float,
-                              focusY: Float): Matrix {
+    override fun getTransform(
+        outTransform: Matrix,
+        parentBounds: Rect,
+        childWidth: Int,
+        childHeight: Int,
+        focusX: Float,
+        focusY: Float
+    ): Matrix {
         val sX = parentBounds.width().toFloat() / childWidth
         val sY = parentBounds.height().toFloat() / childHeight
         val scale = Math.max(sX, sY)
@@ -77,23 +79,26 @@ class FrescoImageLoader : ImageLoader {
             val maxHeapSize = Runtime.getRuntime().maxMemory().toInt()
             val maxMemoryCacheSize = maxHeapSize / 3 * 2//取手机内存最大值的三分之二作为可用的最大内存数
             MemoryCacheParams( //
-                    // 可用最大内存数，以字节为单位
-                    maxMemoryCacheSize,
-                    // 内存中允许的最多图片数量
-                    200,
-                    // 内存中准备清理但是尚未删除的总图片所可用的最大内存数，以字节为单位
-                    Integer.MAX_VALUE,
-                    // 内存中准备清除的图片最大数量
-                    Integer.MAX_VALUE,
-                    // 内存中单图片的最大大小
-                    Integer.MAX_VALUE)
+                // 可用最大内存数，以字节为单位
+                maxMemoryCacheSize,
+                // 内存中允许的最多图片数量
+                200,
+                // 内存中准备清理但是尚未删除的总图片所可用的最大内存数，以字节为单位
+                Integer.MAX_VALUE,
+                // 内存中准备清除的图片最大数量
+                Integer.MAX_VALUE,
+                // 内存中单图片的最大大小
+                Integer.MAX_VALUE
+            )
         }
         val imagePipelineConfigBuilder = ImagePipelineConfig.newBuilder(context)
-        imagePipelineConfigBuilder.setMainDiskCacheConfig(DiskCacheConfig.newBuilder(context)
+        imagePipelineConfigBuilder.setMainDiskCacheConfig(
+            DiskCacheConfig.newBuilder(context)
                 .setBaseDirectoryPath(context.cacheDir)//设置磁盘缓存的路径
                 .setBaseDirectoryName("cache_images")//设置磁盘缓存文件夹的名称
                 .setMaxCacheSize((200 * ByteConstants.MB).toLong())//设置磁盘缓存的大小
-                .build())
+                .build()
+        )
         imagePipelineConfigBuilder.isDownsampleEnabled = true
         //设置已解码的内存缓存（Bitmap缓存）
         imagePipelineConfigBuilder.setBitmapMemoryCacheParamsSupplier {
@@ -108,8 +113,9 @@ class FrescoImageLoader : ImageLoader {
         memoryTrimmableRegistry.registerMemoryTrimmable { trimType ->
             val suggestedTrimRatio = trimType.suggestedTrimRatio
             if (MemoryTrimType.OnCloseToDalvikHeapLimit.suggestedTrimRatio == suggestedTrimRatio
-                    || MemoryTrimType.OnSystemLowMemoryWhileAppInBackground.suggestedTrimRatio == suggestedTrimRatio
-                    || MemoryTrimType.OnSystemLowMemoryWhileAppInForeground.suggestedTrimRatio == suggestedTrimRatio) {
+                || MemoryTrimType.OnSystemLowMemoryWhileAppInBackground.suggestedTrimRatio == suggestedTrimRatio
+                || MemoryTrimType.OnSystemLowMemoryWhileAppInForeground.suggestedTrimRatio == suggestedTrimRatio
+            ) {
                 //清空内存缓存
                 ImagePipelineFactory.getInstance().imagePipeline.clearMemoryCaches()
             }
@@ -122,7 +128,7 @@ class FrescoImageLoader : ImageLoader {
         this.config = imagePipelineConfigBuilder.build()
         Fresco.initialize(context.applicationContext)
         if (BuildConfig.DEBUG) {
-            FLog.setMinimumLoggingLevel(FLog.VERBOSE)
+            FLog.setMinimumLoggingLevel(FLog.DEBUG)
         }
     }
 
@@ -142,13 +148,14 @@ class FrescoImageLoader : ImageLoader {
         draweeView.controller = controller
     }
 
-    private fun buildController(request: ImageRequestBuilder,
-                                draweeView: SimpleDraweeView,
-                                options: ImageLoaderOptions
+    private fun buildController(
+        request: ImageRequestBuilder,
+        draweeView: SimpleDraweeView,
+        options: ImageLoaderOptions
     ): PipelineDraweeControllerBuilder {
         val controllerBuilder = Fresco.newDraweeControllerBuilder()
-                .setImageRequest(request.build())
-                .setOldController(draweeView.controller)
+            .setImageRequest(request.build())
+            .setOldController(draweeView.controller)
 
         if (options.isSetByImageSize && options.imageWidth <= 0) {
             throw IllegalArgumentException("if you set options isSetByImageSize,you must set imageWidth,because compute height dependency by imageWidth.")
@@ -190,10 +197,10 @@ class FrescoImageLoader : ImageLoader {
 
     private fun buildImageRequest(uri: Uri, options: ImageLoaderOptions): ImageRequestBuilder {
         val request = ImageRequestBuilder.newBuilderWithSource(uri)
-                //本功能仅支持本地URI，并且是JPEG图片格式 如果本地JPEG图，有EXIF的缩略图，image pipeline 可以立刻返回它作为一个缩略图
-                .setLocalThumbnailPreviewsEnabled(true)
-                //渐进式加载
-                .setProgressiveRenderingEnabled(options.isProgressiveLoadImage)
+            //本功能仅支持本地URI，并且是JPEG图片格式 如果本地JPEG图，有EXIF的缩略图，image pipeline 可以立刻返回它作为一个缩略图
+            .setLocalThumbnailPreviewsEnabled(true)
+            //渐进式加载
+            .setProgressiveRenderingEnabled(options.isProgressiveLoadImage)
         if (options.imageWidth > 0 && options.imageHeight > 0) {
             request.resizeOptions = ResizeOptions(options.imageWidth, options.imageHeight)
         }
@@ -222,8 +229,8 @@ class FrescoImageLoader : ImageLoader {
     private fun setImageLoaderOptions(options: ImageLoaderOptions, draweeView: SimpleDraweeView) {
         val builder = GenericDraweeHierarchyBuilder(draweeView.context.resources)
         val hierarchy = builder
-                .setFadeDuration(300)
-                .build()
+            .setFadeDuration(300)
+            .build()
         draweeView.hierarchy = hierarchy
 
         if (options.isCircleImage) {
@@ -270,7 +277,7 @@ class FrescoImageLoader : ImageLoader {
 
     private fun setBorder(draweeView: SimpleDraweeView, color: Int, borderSize: Float) {
         val roundingParams = draweeView.hierarchy.roundingParams
-                ?: throw IllegalArgumentException("you must set radius or set a circle image!!")
+            ?: throw IllegalArgumentException("you must set radius or set a circle image!!")
         if (borderSize <= 0) {
             throw IllegalArgumentException("do you forget set a borderSize?")
         }
