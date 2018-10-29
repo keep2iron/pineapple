@@ -72,10 +72,6 @@ class FrescoImageLoader : ImageLoader {
     private lateinit var config: ImagePipelineConfig
     private val handler: Handler = Handler()
 
-    override fun getConfig(): Any {
-        return config
-    }
-
     override fun init(context: Application) {
         val createMemoryCacheParams = {
             val maxHeapSize = Runtime.getRuntime().maxMemory().toInt()
@@ -210,35 +206,15 @@ class FrescoImageLoader : ImageLoader {
         val dataSource = imagePipeline.fetchDecodedImage(request.build(), context.applicationContext)
         dataSource.subscribe(object : BaseBitmapDataSubscriber() {
             override fun onFailureImpl(dataSource: DataSource<CloseableReference<CloseableImage>>?) {
-                Looper.getMainLooper().thread
                 handler.post {
                     onGetBitmap(null)
                 }
             }
 
             override fun onNewResultImpl(bitmap: Bitmap?) {
-                val copyBitmap = bitmap?.copy(Bitmap.Config.ARGB_8888, true)
                 handler.post {
-                    onGetBitmap(copyBitmap)
+                    onGetBitmap(bitmap)
                 }
-            }
-        }, ExecutorManager.cacheExecutor)
-    }
-
-    override fun getImage(context: Context,
-                          url: String,
-                          options: ImageLoaderOptions,
-                          onGetBitmap: (CloseableImageWrapper?) -> Unit) {
-        val request = buildImageRequest(Uri.parse(url), options)
-        val imagePipeline = Fresco.getImagePipeline()
-        val dataSource = imagePipeline.fetchDecodedImage(request.build(), context.applicationContext)
-        dataSource.subscribe(object : BaseDataSubscriber<CloseableReference<CloseableImage>>() {
-            override fun onFailureImpl(dataSource: DataSource<CloseableReference<CloseableImage>>) {
-                onGetBitmap(null)
-            }
-
-            override fun onNewResultImpl(dataSource: DataSource<CloseableReference<CloseableImage>>) {
-                onGetBitmap(CloseableImageWrapper(dataSource.result))
             }
         }, ExecutorManager.cacheExecutor)
     }

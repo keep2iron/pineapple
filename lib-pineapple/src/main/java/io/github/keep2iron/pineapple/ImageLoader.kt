@@ -35,13 +35,13 @@ interface ImageLoader {
 //                          blurRadius: Int)
 
 
-    /**
-     * 获取网络url指定的Bitmap
-     */
-    fun getImage(context: Context,
-                 url: String,
-                 options: ImageLoaderOptions = ImageLoaderOptions.getDefaultOption(),
-                 onGetBitmap: (CloseableImageWrapper?) -> Unit)
+//    /**
+//     * 获取网络url指定的Bitmap
+//     */
+//    fun getImage(context: Context,
+//                 url: String,
+//                 options: ImageLoaderOptions = ImageLoaderOptions.getDefaultOption(),
+//                 onGetBitmap: (Bitmap) -> Unit)
 
     fun getBitmap(context: Context, url: String, options: ImageLoaderOptions = ImageLoaderOptions.getDefaultOption(), onGetBitmap: (Bitmap?) -> Unit)
 
@@ -65,9 +65,4 @@ interface ImageLoader {
      * 清除所有缓存
      */
     fun clearAllCache()
-
-    /**
-     * 获取配置
-     */
-    fun getConfig(): Any
 }
