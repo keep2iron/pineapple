@@ -1,5 +1,4 @@
-<center>![](https://i.imgur.com/mnGMMc1.png)</center>
-
+![](https://i.imgur.com/mnGMMc1.png)
 
 # Pineapple
 ![](https://img.shields.io/badge/version-0.1.2-brightgreen.svg) ![](https://img.shields.io/badge/fresco-1.11.0-brightgreen.svg) ![](https://img.shields.io/badge/support-27.1.1-brightgreen.svg)
