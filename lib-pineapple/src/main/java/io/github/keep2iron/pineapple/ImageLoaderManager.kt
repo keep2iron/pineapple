@@ -16,6 +16,8 @@ import android.net.Uri
 class ImageLoaderManager private constructor(private val imageLoader: ImageLoader) :
     ImageLoader {
 
+    override fun getConfig(): Any = imageLoader.getConfig()
+
     override fun init(context: Application) {
         imageLoader.init(context)
     }
