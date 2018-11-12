@@ -28,22 +28,11 @@ interface ImageLoader {
                       uri: Uri,
                       options: ImageLoaderOptions = ImageLoaderOptions.getDefaultOption())
 
-//    fun showBlurImageView(imageView: MiddlewareView,
-//                          url: String,
-//                          options: ImageLoaderOptions = ImageLoaderOptions.getDefaultOption(),
-//                          iterations: Int,
-//                          blurRadius: Int)
 
-
-//    /**
-//     * 获取网络url指定的Bitmap
-//     */
-//    fun getImage(context: Context,
-//                 url: String,
-//                 options: ImageLoaderOptions = ImageLoaderOptions.getDefaultOption(),
-//                 onGetBitmap: (Bitmap) -> Unit)
-
-    fun getBitmap(context: Context, url: String, options: ImageLoaderOptions = ImageLoaderOptions.getDefaultOption(), onGetBitmap: (Bitmap?) -> Unit)
+    fun getBitmap(context: Context,
+                  url: String,
+                  options: ImageLoaderOptions = ImageLoaderOptions.getDefaultOption(),
+                  onGetBitmap: (Bitmap?) -> Unit)
 
 
     /**
@@ -52,12 +41,12 @@ interface ImageLoader {
     fun cleanMemory(context: Context)
 
     /**
-     * 暂停所有下载
+     * 暂停
      */
     fun pause(context: Context)
 
     /**
-     * 回复所有下载
+     * 继续
      */
     fun resume(context: Context)
 
@@ -65,4 +54,9 @@ interface ImageLoader {
      * 清除所有缓存
      */
     fun clearAllCache()
+
+    /**
+     * 获取配置
+     */
+    fun getConfig(): Any
 }

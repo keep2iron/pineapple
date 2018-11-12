@@ -34,16 +34,8 @@ import com.facebook.imagepipeline.datasource.BaseBitmapDataSubscriber
 import com.facebook.imagepipeline.decoder.SimpleProgressiveJpegConfig
 import com.facebook.imagepipeline.image.ImageInfo
 import com.facebook.imagepipeline.postprocessors.IterativeBoxBlurPostProcessor
-import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executor
 import java.util.concurrent.Executors
-
-private class ExecutorManager private constructor() {
-    companion object {
-        val cacheExecutor: ExecutorService by lazy(mode = LazyThreadSafetyMode.SYNCHRONIZED) {
-            Executors.newCachedThreadPool()
-        }
-    }
-}
 
 class MatrixScaleType(private val matrix: Matrix) : ScalingUtils.ScaleType {
 
@@ -71,8 +63,14 @@ class MatrixScaleType(private val matrix: Matrix) : ScalingUtils.ScaleType {
  * @since 2018/06/25 20:12
  */
 class FrescoImageLoader : ImageLoader {
+
     private lateinit var config: ImagePipelineConfig
-    private val handler: Handler = Handler()
+
+    override fun getConfig(): Any {
+        return config
+    }
+
+    private val handler = Handler(Looper.getMainLooper())
 
     override fun init(context: Application) {
         val createMemoryCacheParams = {
@@ -128,7 +126,7 @@ class FrescoImageLoader : ImageLoader {
         this.config = imagePipelineConfigBuilder.build()
         Fresco.initialize(context.applicationContext)
         if (BuildConfig.DEBUG) {
-            FLog.setMinimumLoggingLevel(FLog.DEBUG)
+            FLog.setMinimumLoggingLevel(FLog.VERBOSE)
         }
     }
 
@@ -219,11 +217,12 @@ class FrescoImageLoader : ImageLoader {
             }
 
             override fun onNewResultImpl(bitmap: Bitmap?) {
+                val copyBitmap = bitmap?.copy(Bitmap.Config.ARGB_8888, true)
                 handler.post {
-                    onGetBitmap(bitmap)
+                    onGetBitmap(copyBitmap)
                 }
             }
-        }, ExecutorManager.cacheExecutor)
+        }, Executors.newCachedThreadPool())
     }
 
     private fun setImageLoaderOptions(options: ImageLoaderOptions, draweeView: SimpleDraweeView) {
