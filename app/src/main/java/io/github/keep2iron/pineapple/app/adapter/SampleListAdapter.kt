@@ -35,6 +35,10 @@ class SampleListAdapter(private val data: List<String>) : RecyclerView.Adapter<S
 //        ImageLoaderManager.INSTANCE.showImageView(holder.binding.imageView, data[position], ImageLoaderOptions())
 //        holder.binding.imageUrl = data[position]
         // 通过databinding 绑定item加载
-        holder.binding.imageUrl = data[position]
+//        holder.binding.imageUrl = data[position]
+        ImageLoaderManager.INSTANCE.showImageView(holder.binding.imageView, data[position], ImageLoaderOptions().apply {
+            isCircleImage = true
+            scaleType = ImageLoaderOptions.ScaleType.CENTER_CROP
+        })
     }
 }

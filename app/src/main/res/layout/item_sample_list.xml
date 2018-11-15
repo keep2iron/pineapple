@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto">
+        xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:tools="http://schemas.android.com/tools">
     <data>
         <variable name="imageUrl" type="String"/>
     </data>
@@ -11,10 +11,13 @@
 
         <io.github.keep2iron.pineapple.MiddlewareView
                 android:id="@+id/imageView"
-                app:url="@{imageUrl}"
-                android:src="@mipmap/ic_launcher"
-                android:layout_width="match_parent"
-                android:layout_height="300dp"/>
+                android:layout_width="96dp"
+                android:layout_height="96dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="80dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:src="@mipmap/ic_launcher"/>
 
         <TextView
                 android:text="测试测试"
