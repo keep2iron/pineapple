@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Matrix
+import android.graphics.PointF
 import android.graphics.Rect
 import android.graphics.drawable.Animatable
 import android.net.Uri
@@ -124,7 +125,7 @@ class FrescoImageLoader : ImageLoader {
         imagePipelineConfigBuilder.setBitmapsConfig(Bitmap.Config.RGB_565)
 
         this.config = imagePipelineConfigBuilder.build()
-        Fresco.initialize(context.applicationContext)
+        Fresco.initialize(context.applicationContext, this.config)
         if (BuildConfig.DEBUG) {
             FLog.setMinimumLoggingLevel(FLog.VERBOSE)
         }
@@ -261,6 +262,7 @@ class FrescoImageLoader : ImageLoader {
             ImageLoaderOptions.ScaleType.MATRIX -> MatrixScaleType(options.matrix!!)
         }
         draweeView.hierarchy.actualImageScaleType = optionScaleType
+        draweeView.hierarchy.setActualImageFocusPoint(PointF(0.5f, 0.5f))
     }
 
 
