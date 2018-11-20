@@ -4,6 +4,11 @@ import android.app.Application
 import android.content.Context
 import android.graphics.Bitmap
 import android.net.Uri
+import android.support.annotation.IntDef
+import io.github.keep2iron.pineapple.ImageLoaderManager.Companion.FRESCO
+import io.github.keep2iron.pineapple.ImageLoaderManager.Companion.GLIDE
+import java.lang.IllegalArgumentException
+
 
 /**
  *
@@ -16,7 +21,7 @@ import android.net.Uri
 class ImageLoaderManager private constructor(private val imageLoader: ImageLoader) :
     ImageLoader {
 
-    override fun getConfig(): Any = imageLoader.getConfig()
+    override fun getConfig(): Any? = imageLoader.getConfig()
 
     override fun init(context: Application) {
         imageLoader.init(context)
@@ -52,17 +57,42 @@ class ImageLoaderManager private constructor(private val imageLoader: ImageLoade
 
     companion object {
 
+        const val FRESCO = 0
+        const val GLIDE = 1
+
         @JvmStatic
-        fun init(application: Application, imageLoader: ImageLoader = ImageLoaderManager.FRESCO) {
-            ImageLoaderManager.INSTANCE = ImageLoaderManager(imageLoader)
+        fun init(application: Application, @LOADER mode: Int = FRESCO) {
+            ImageLoaderManager.INSTANCE = ImageLoaderManager(
+                when (mode) {
+                    FRESCO -> {
+                        FRESCO_LOADER
+                    }
+                    GLIDE -> {
+                        GLIDE_LOADER
+                    }
+                    else -> {
+                        throw IllegalArgumentException("not support $mode loader")
+                    }
+                }
+            )
             ImageLoaderManager.INSTANCE.init(application)
         }
 
+        @JvmStatic
         lateinit var INSTANCE: ImageLoaderManager
 
         @JvmStatic
-        private val FRESCO: ImageLoader by lazy(mode = LazyThreadSafetyMode.SYNCHRONIZED) {
+        private val FRESCO_LOADER: ImageLoader by lazy(mode = LazyThreadSafetyMode.SYNCHRONIZED) {
             FrescoImageLoader()
+        }
+
+        @JvmStatic
+        private val GLIDE_LOADER: ImageLoader by lazy(mode = LazyThreadSafetyMode.SYNCHRONIZED) {
+            GlideImageLoader()
         }
     }
 }
+
+@Retention(AnnotationRetention.SOURCE)
+@IntDef(FRESCO, GLIDE)
+annotation class LOADER

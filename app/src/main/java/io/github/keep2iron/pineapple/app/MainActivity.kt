@@ -4,10 +4,12 @@ import android.app.Activity
 import android.app.Application
 import android.content.ComponentCallbacks2
 import android.content.res.Configuration
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.widget.RecyclerView
-import com.facebook.drawee.backends.pipeline.Fresco
+import android.util.DisplayMetrics
 import io.github.keep2iron.pineapple.ImageLoaderManager
 import io.github.keep2iron.pineapple.app.adapter.SampleListAdapter
 
@@ -16,10 +18,12 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setCustomDensity(this, this.application)
+        val bitmapClazz = Class.forName("android.graphics.Bitmap")
+        val method = bitmapClazz.getMethod("setDefaultDensity", Int::class.java)
+        method.invoke(null, resources.displayMetrics.densityDpi)
         setContentView(R.layout.activity_main)
-
-        Fresco.initialize(this.application)
-//        ImageLoaderManager.init(application)
+//        Fresco.initialize(this.application)
+        ImageLoaderManager.init(application, ImageLoaderManager.FRESCO)
 
 
         val data = arrayListOf(

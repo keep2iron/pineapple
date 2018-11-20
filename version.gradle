@@ -41,6 +41,7 @@ def versions = [
                 fresco_version: "1.11.0",
                 status_bar    : "2.3.0",
                 logger_android: "2.2.0",
+                glide_version : "4.8.0",
         ],
 ]
 
@@ -56,6 +57,10 @@ def deps = [
         fresco                     : "com.facebook.fresco:fresco:$versions.third_part.fresco_version",
         logging                    : "com.squareup.okhttp3:logging-interceptor:3.9.0",
 
+        glide                      : [
+                api     : "com.github.bumptech.glide:glide:$versions.third_part.glide_version",
+                compiler: "com.github.bumptech.glide:compiler:$versions.third_part.glide_version",
+        ],
         test                       : [
                 rules           : "com.android.support.test:rules:$versions.test.rules",
                 junit           : "junit:junit:$versions.test.junit",

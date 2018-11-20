@@ -32,11 +32,12 @@ dependencies {
     implementation deps.support.constraint_layout
     implementation deps.support.recyclerview
     kapt deps.kotlin_databinding_compiler
-    implementation deps.fresco
+//    implementation deps.glide.api
+    api deps.fresco
 
 //    implementation 'com.github.keep2iron:pineapple:0.1.3'
 
-    api project(':lib-pineapple')
+    implementation project(':lib-pineapple')
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'

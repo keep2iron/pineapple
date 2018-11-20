@@ -3,7 +3,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'com.github.dcendents.android-maven'
 
-group='com.github.keep2iron'	// 指定group，com.github.<用户名>
+group = 'com.github.keep2iron'    // 指定group，com.github.<用户名>
 
 android {
     compileSdkVersion versions.build.target_sdk
@@ -38,7 +38,9 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     implementation deps.kotlin.stdlib_jdk7
-    api deps.fresco
+    compileOnly deps.fresco
+    compileOnly deps.glide.api
+    kapt deps.glide.compiler
     kapt deps.kotlin_databinding_compiler
 
     testImplementation 'junit:junit:4.12'
@@ -58,7 +60,7 @@ task sourcesJar(type: Jar) {
 }
 
 task javadoc(type: Javadoc) {
-    failOnError  false
+    failOnError false
     source = android.sourceSets.main.java.sourceFiles
     classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
     classpath += configurations.compile

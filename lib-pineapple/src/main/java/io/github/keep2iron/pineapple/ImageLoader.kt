@@ -58,5 +58,5 @@ interface ImageLoader {
     /**
      * 获取配置
      */
-    fun getConfig(): Any
+    fun getConfig(): Any?
 }
