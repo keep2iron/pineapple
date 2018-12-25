@@ -18,14 +18,14 @@ class MainActivity : AppCompatActivity() {
         setCustomDensity(this, this.application)
         setContentView(R.layout.activity_main)
 
-        Fresco.initialize(this.application)
-//        ImageLoaderManager.init(application)
+//        Fresco.initialize(this.application)
+        ImageLoaderManager.init(application)
 
 
         val data = arrayListOf(
             "https://img.ipcfun.com/uploads/post/17593/5bcec0e42417f.jpg",
             "http://d.lanrentuku.com/down/png/1807/10shuguopng.jpg",
-            "https://alpha-head.oss-cn-shenzhen.aliyuncs.com/65c57a0e-ccb8-41be-807d-a0d6dba0f80e.jpeg"
+            "https://alpha-head.oss-cn-shenzhen.aliyuncs.com/65c57a0e-ccb8-41be-"
         )
 
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerView)

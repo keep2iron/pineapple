@@ -245,6 +245,12 @@ class FrescoImageLoader : ImageLoader {
         if (options.scaleType != ImageLoaderOptions.ScaleType.NONE) {
             setMode(draweeView, options)
         }
+        if (options.placeHolderRes != -1) {
+            hierarchy.setPlaceholderImage(options.placeHolderRes)
+        }
+        if (options.placeHolder != null) {
+            hierarchy.setPlaceholderImage(options.placeHolder)
+        }
     }
 
     private fun setMode(draweeView: SimpleDraweeView, options: ImageLoaderOptions) {
