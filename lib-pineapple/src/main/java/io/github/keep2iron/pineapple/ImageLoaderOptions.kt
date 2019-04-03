@@ -23,7 +23,12 @@ class ImageLoaderOptions {
     /**
      * 圆角
      */
-    var radius: Float = -1f
+    var radius: Float = 0f
+    var radiusTopLeft: Float = 0f
+    var radiusTopRight: Float = 0f
+    var radiusBottomRight: Float = 0f
+    var radiusBottomLeft: Float = 0f
+
     /**
      * 是否以渐进式方式加载图片 ，仅Fresco支持
      */
@@ -58,7 +63,8 @@ class ImageLoaderOptions {
     /**
      * 占位图资源id
      */
-    @DrawableRes var placeHolderRes:Int = -1
+    @DrawableRes
+    var placeHolderRes: Int = -1
 
     var matrix: Matrix? = null
 

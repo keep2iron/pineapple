@@ -24,7 +24,6 @@ import com.facebook.drawee.generic.RoundingParams
 import com.facebook.imagepipeline.request.ImageRequestBuilder
 import com.facebook.imagepipeline.image.CloseableImage
 import com.facebook.common.references.CloseableReference
-import com.facebook.datasource.BaseDataSubscriber
 import com.facebook.datasource.DataSource
 import com.facebook.drawee.backends.pipeline.PipelineDraweeControllerBuilder
 import com.facebook.drawee.controller.BaseControllerListener
@@ -35,7 +34,6 @@ import com.facebook.imagepipeline.datasource.BaseBitmapDataSubscriber
 import com.facebook.imagepipeline.decoder.SimpleProgressiveJpegConfig
 import com.facebook.imagepipeline.image.ImageInfo
 import com.facebook.imagepipeline.postprocessors.IterativeBoxBlurPostProcessor
-import java.util.concurrent.Executor
 import java.util.concurrent.Executors
 
 class MatrixScaleType(private val matrix: Matrix) : ScalingUtils.ScaleType {
@@ -236,8 +234,13 @@ class FrescoImageLoader : ImageLoader {
         if (options.isCircleImage) {
             loadCircleImage(draweeView)
         }
-        if (options.radius > 0) {
-            loadRadiusImage(draweeView, options.radius)
+        if (options.radius > 0 ||
+            options.radiusTopLeft > 0 ||
+            options.radiusTopRight > 0 ||
+            options.radiusBottomLeft > 0 ||
+            options.radiusBottomRight > 0
+        ) {
+            loadRadiusImage(draweeView, options)
         }
         if (options.borderOverlayColor != -1) {
             setBorder(draweeView, options.borderOverlayColor, options.borderSize)
@@ -277,8 +280,26 @@ class FrescoImageLoader : ImageLoader {
         draweeView.hierarchy.roundingParams = asCircle
     }
 
-    private fun loadRadiusImage(draweeView: SimpleDraweeView, radius: Float) {
-        val cornersRadius = RoundingParams.fromCornersRadius(radius)
+    private fun loadRadiusImage(draweeView: SimpleDraweeView, options: ImageLoaderOptions) {
+        if (options.radiusTopLeft == 0f) {
+            options.radiusTopLeft = options.radius
+        }
+        if (options.radiusTopRight == 0f) {
+            options.radiusTopRight = options.radius
+        }
+        if (options.radiusBottomLeft == 0f) {
+            options.radiusBottomLeft = options.radius
+        }
+        if (options.radiusBottomRight == 0f) {
+            options.radiusBottomRight = options.radius
+        }
+
+        val cornersRadius = RoundingParams.fromCornersRadii(
+            options.radiusTopLeft,
+            options.radiusTopRight,
+            options.radiusBottomLeft,
+            options.radiusBottomRight
+        )
         draweeView.hierarchy.roundingParams = cornersRadius
     }
 
