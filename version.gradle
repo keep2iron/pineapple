@@ -39,7 +39,7 @@ def versions = [
                 retrofit      : "2.3.0",
                 rxjava2       : "2.2.0",
                 rx_android    : "2.1.0",
-                fresco_version: "1.11.0",
+                fresco_version: "1.13.0",
                 status_bar    : "2.3.0",
                 logger_android: "2.2.0",
                 fast4android  : "0.0.6.22"
