@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import android.graphics.Bitmap
 import android.net.Uri
+import android.support.annotation.DrawableRes
 
 /**
  *
@@ -15,24 +16,36 @@ interface ImageLoader {
     /**
      * 该方法必须在主线程并且最好在application中初始化
      */
-    fun init(context: Application)
+    fun init(context: Application, config: ImageLoaderConfig)
 
     /**
      * 显示imageView
      */
-    fun showImageView(imageView: MiddlewareView,
-                      url: String,
-                      options: ImageLoaderOptions = ImageLoaderOptions.getDefaultOption())
+    fun showImageView(
+        imageView: MiddlewareView,
+        url: String,
+        options: ImageLoaderOptions = ImageLoaderOptions.getDefaultOption()
+    )
 
-    fun showImageView(imageView: MiddlewareView,
-                      uri: Uri,
-                      options: ImageLoaderOptions = ImageLoaderOptions.getDefaultOption())
+    fun showImageView(
+        imageView: MiddlewareView,
+        uri: Uri,
+        options: ImageLoaderOptions = ImageLoaderOptions.getDefaultOption()
+    )
+
+    fun showImageView(
+        imageView: MiddlewareView,
+        @DrawableRes resId: Int,
+        options: ImageLoaderOptions = ImageLoaderOptions.getDefaultOption()
+    )
 
 
-    fun getBitmap(context: Context,
-                  url: String,
-                  options: ImageLoaderOptions = ImageLoaderOptions.getDefaultOption(),
-                  onGetBitmap: (Bitmap?) -> Unit)
+    fun getBitmap(
+        context: Context,
+        url: String,
+        options: ImageLoaderOptions = ImageLoaderOptions.getDefaultOption(),
+        onGetBitmap: (Bitmap?) -> Unit
+    )
 
 
     /**

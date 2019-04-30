@@ -18,8 +18,8 @@ class ImageLoaderManager private constructor(private val imageLoader: ImageLoade
 
     override fun getConfig(): Any = imageLoader.getConfig()
 
-    override fun init(context: Application) {
-        imageLoader.init(context)
+    override fun init(context: Application, config: ImageLoaderConfig) {
+        imageLoader.init(context, config)
     }
 
     override fun showImageView(imageView: MiddlewareView, url: String, options: ImageLoaderOptions) {
@@ -28,6 +28,10 @@ class ImageLoaderManager private constructor(private val imageLoader: ImageLoade
 
     override fun showImageView(imageView: MiddlewareView, uri: Uri, options: ImageLoaderOptions) {
         imageLoader.showImageView(imageView, uri, options)
+    }
+
+    override fun showImageView(imageView: MiddlewareView, resId: Int, options: ImageLoaderOptions) {
+        imageLoader.showImageView(imageView, resId, options)
     }
 
     override fun getBitmap(context: Context, url: String, options: ImageLoaderOptions, onGetBitmap: (Bitmap?) -> Unit) {
@@ -53,9 +57,18 @@ class ImageLoaderManager private constructor(private val imageLoader: ImageLoade
     companion object {
 
         @JvmStatic
-        fun init(application: Application, imageLoader: ImageLoader = ImageLoaderManager.FRESCO) {
+        fun init(
+            application: Application,
+            config: ImageLoaderConfig? = null,
+            imageLoader: ImageLoader = ImageLoaderManager.FRESCO
+        ) {
+            val perConfig = if (config == null) {
+                ImageLoaderConfig(application)
+            } else {
+                config
+            }
             ImageLoaderManager.INSTANCE = ImageLoaderManager(imageLoader)
-            ImageLoaderManager.INSTANCE.init(application)
+            ImageLoaderManager.INSTANCE.init(application, perConfig)
         }
 
         lateinit var INSTANCE: ImageLoaderManager

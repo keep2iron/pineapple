@@ -17,10 +17,6 @@ android {
         versionName "1.0"
     }
 
-    dataBinding {
-        enabled true
-    }
-
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -39,7 +35,8 @@ dependencies {
 
     implementation deps.kotlin.stdlib_jdk7
     api deps.fresco
-    kapt deps.kotlin_databinding_compiler
+    implementation deps.support.annotations
+    compileOnly deps.fresco_gif
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'

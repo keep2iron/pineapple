@@ -62,7 +62,6 @@ class MatrixScaleType(private val matrix: Matrix) : ScalingUtils.ScaleType {
  * @since 2018/06/25 20:12
  */
 class FrescoImageLoader : ImageLoader {
-
     private lateinit var config: ImagePipelineConfig
 
     override fun getConfig(): Any {
@@ -71,7 +70,7 @@ class FrescoImageLoader : ImageLoader {
 
     private val handler = Handler(Looper.getMainLooper())
 
-    override fun init(context: Application) {
+    override fun init(context: Application, config: ImageLoaderConfig) {
         val createMemoryCacheParams = {
             val maxHeapSize = Runtime.getRuntime().maxMemory().toInt()
             val maxMemoryCacheSize = maxHeapSize / 3 * 2//取手机内存最大值的三分之二作为可用的最大内存数
@@ -79,7 +78,7 @@ class FrescoImageLoader : ImageLoader {
                 // 可用最大内存数，以字节为单位
                 maxMemoryCacheSize,
                 // 内存中允许的最多图片数量
-                200,
+                config.maxCacheCount,
                 // 内存中准备清理但是尚未删除的总图片所可用的最大内存数，以字节为单位
                 Integer.MAX_VALUE,
                 // 内存中准备清除的图片最大数量
@@ -91,9 +90,9 @@ class FrescoImageLoader : ImageLoader {
         val imagePipelineConfigBuilder = ImagePipelineConfig.newBuilder(context)
         imagePipelineConfigBuilder.setMainDiskCacheConfig(
             DiskCacheConfig.newBuilder(context)
-                .setBaseDirectoryPath(context.cacheDir)//设置磁盘缓存的路径
-                .setBaseDirectoryName("cache_images")//设置磁盘缓存文件夹的名称
-                .setMaxCacheSize((200 * ByteConstants.MB).toLong())//设置磁盘缓存的大小
+                .setBaseDirectoryPath(config.cacheDirPath)//设置磁盘缓存的路径
+                .setBaseDirectoryName(config.cacheDirName)//设置磁盘缓存文件夹的名称
+                .setMaxCacheSize(config.maxCacheSize)//设置磁盘缓存的大小
                 .build()
         )
         imagePipelineConfigBuilder.isDownsampleEnabled = true
@@ -129,6 +128,14 @@ class FrescoImageLoader : ImageLoader {
         }
     }
 
+    override fun showImageView(imageView: MiddlewareView, resId: Int, options: ImageLoaderOptions) {
+        this.showImageView(
+            imageView,
+            Uri.parse("res://" + imageView.context.applicationContext.packageName + "/" + resId),
+            options
+        )
+    }
+
     override fun showImageView(imageView: MiddlewareView, uri: Uri, options: ImageLoaderOptions) {
         val draweeView = imageView as SimpleDraweeView
         val requestBuilder = buildImageRequest(uri, options)
@@ -136,7 +143,9 @@ class FrescoImageLoader : ImageLoader {
             requestBuilder.postprocessor = IterativeBoxBlurPostProcessor(options.iterations, options.blurRadius)
         }
         val controllerBuilder = buildController(requestBuilder, draweeView, options)
-
+        if (options.isLoadGif) {
+            controllerBuilder.autoPlayAnimations = true
+        }
         options.smallImageUri?.let { smallUrl ->
             controllerBuilder.lowResImageRequest = buildImageRequest(Uri.parse(smallUrl), options).build()
         }
@@ -226,6 +235,7 @@ class FrescoImageLoader : ImageLoader {
 
     private fun setImageLoaderOptions(options: ImageLoaderOptions, draweeView: SimpleDraweeView) {
         val builder = GenericDraweeHierarchyBuilder(draweeView.context.resources)
+
         val hierarchy = builder
             .setFadeDuration(300)
             .build()

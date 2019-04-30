@@ -69,7 +69,7 @@ class ImageLoaderOptions {
     var matrix: Matrix? = null
 
     /**
-     * 是否加载gif
+     * 是否自动加载gif
      */
     var isLoadGif = false
 
