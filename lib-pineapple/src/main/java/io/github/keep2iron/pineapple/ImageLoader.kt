@@ -16,7 +16,7 @@ interface ImageLoader {
     /**
      * 该方法必须在主线程并且最好在application中初始化
      */
-    fun init(context: Application, config: ImageLoaderConfig)
+    fun init(context: Application, config: ImageLoaderConfig, defaultImageLoaderOptions: ImageLoaderOptions?)
 
     /**
      * 显示imageView
@@ -24,26 +24,26 @@ interface ImageLoader {
     fun showImageView(
         imageView: MiddlewareView,
         url: String,
-        options: ImageLoaderOptions = ImageLoaderOptions.getDefaultOption()
+        options: ImageLoaderOptions = ImageLoaderOptions.newDefaultOption()
     )
 
     fun showImageView(
         imageView: MiddlewareView,
         uri: Uri,
-        options: ImageLoaderOptions = ImageLoaderOptions.getDefaultOption()
+        options: ImageLoaderOptions = ImageLoaderOptions.newDefaultOption()
     )
 
     fun showImageView(
         imageView: MiddlewareView,
         @DrawableRes resId: Int,
-        options: ImageLoaderOptions = ImageLoaderOptions.getDefaultOption()
+        options: ImageLoaderOptions = ImageLoaderOptions.newDefaultOption()
     )
 
 
     fun getBitmap(
         context: Context,
         url: String,
-        options: ImageLoaderOptions = ImageLoaderOptions.getDefaultOption(),
+        options: ImageLoaderOptions = ImageLoaderOptions.newDefaultOption(),
         onGetBitmap: (Bitmap?) -> Unit
     )
 

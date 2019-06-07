@@ -64,13 +64,19 @@ class MatrixScaleType(private val matrix: Matrix) : ScalingUtils.ScaleType {
 class FrescoImageLoader : ImageLoader {
     private lateinit var config: ImagePipelineConfig
 
+    private lateinit var imageLoaderConfig: ImageLoaderConfig
+
+    private var defaultImageLoaderOptions: ImageLoaderOptions? = null
+
     override fun getConfig(): Any {
         return config
     }
 
     private val handler = Handler(Looper.getMainLooper())
 
-    override fun init(context: Application, config: ImageLoaderConfig) {
+    override fun init(context: Application, config: ImageLoaderConfig, defaultImageLoaderOptions: ImageLoaderOptions?) {
+        this.imageLoaderConfig = config
+        this.defaultImageLoaderOptions = defaultImageLoaderOptions
         val createMemoryCacheParams = {
             val maxHeapSize = Runtime.getRuntime().maxMemory().toInt()
             val maxMemoryCacheSize = maxHeapSize / 3 * 2//取手机内存最大值的三分之二作为可用的最大内存数
@@ -137,20 +143,29 @@ class FrescoImageLoader : ImageLoader {
     }
 
     override fun showImageView(imageView: MiddlewareView, uri: Uri, options: ImageLoaderOptions) {
-        val draweeView = imageView as SimpleDraweeView
-        val requestBuilder = buildImageRequest(uri, options)
-        if (options.iterations > 0 && options.blurRadius > 0) {
-            requestBuilder.postprocessor = IterativeBoxBlurPostProcessor(options.iterations, options.blurRadius)
+        val newOptions = if (defaultImageLoaderOptions != null) {
+            val newOptions = ImageLoaderOptions()
+            newOptions.setOptions(defaultImageLoaderOptions!!)
+            newOptions.setOptions(options)
+            newOptions
+        } else {
+            options
         }
-        val controllerBuilder = buildController(requestBuilder, draweeView, options)
-        if (options.isLoadGif) {
+
+        val draweeView = imageView as SimpleDraweeView
+        val requestBuilder = buildImageRequest(uri, newOptions)
+        if (newOptions.iterations > 0 && newOptions.blurRadius > 0) {
+            requestBuilder.postprocessor = IterativeBoxBlurPostProcessor(newOptions.iterations, newOptions.blurRadius)
+        }
+        val controllerBuilder = buildController(requestBuilder, draweeView, newOptions)
+        if (newOptions.isLoadGif) {
             controllerBuilder.autoPlayAnimations = true
         }
-        options.smallImageUri?.let { smallUrl ->
-            controllerBuilder.lowResImageRequest = buildImageRequest(Uri.parse(smallUrl), options).build()
+        newOptions.smallImageUri?.let { smallUrl ->
+            controllerBuilder.lowResImageRequest = buildImageRequest(Uri.parse(smallUrl), newOptions).build()
         }
         val controller = controllerBuilder.build()
-        setImageLoaderOptions(options, draweeView)
+        setImageLoaderOptions(newOptions, draweeView)
         draweeView.controller = controller
     }
 
@@ -252,13 +267,13 @@ class FrescoImageLoader : ImageLoader {
         ) {
             loadRadiusImage(draweeView, options)
         }
-        if (options.borderOverlayColor != -1) {
+        if (options.borderOverlayColor != 0) {
             setBorder(draweeView, options.borderOverlayColor, options.borderSize)
         }
         if (options.scaleType != ImageLoaderOptions.ScaleType.NONE) {
             setMode(draweeView, options)
         }
-        if (options.placeHolderRes != -1) {
+        if (options.placeHolderRes != 0) {
             hierarchy.setPlaceholderImage(options.placeHolderRes)
         }
         if (options.placeHolder != null) {

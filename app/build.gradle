@@ -33,8 +33,7 @@ dependencies {
     implementation deps.support.recyclerview
     kapt deps.kotlin_databinding_compiler
     implementation deps.fresco
-
-//    implementation 'com.github.keep2iron:pineapple:0.16-beta'
+    implementation deps.fresco_gif
 
     api project(':lib-pineapple')
 

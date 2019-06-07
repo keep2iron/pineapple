@@ -18,8 +18,8 @@ class ImageLoaderManager private constructor(private val imageLoader: ImageLoade
 
     override fun getConfig(): Any = imageLoader.getConfig()
 
-    override fun init(context: Application, config: ImageLoaderConfig) {
-        imageLoader.init(context, config)
+    override fun init(context: Application, config: ImageLoaderConfig, defaultImageLoaderOptions: ImageLoaderOptions?) {
+        imageLoader.init(context, config, defaultImageLoaderOptions)
     }
 
     override fun showImageView(imageView: MiddlewareView, url: String, options: ImageLoaderOptions) {
@@ -60,18 +60,19 @@ class ImageLoaderManager private constructor(private val imageLoader: ImageLoade
         fun init(
             application: Application,
             config: ImageLoaderConfig? = null,
-            imageLoader: ImageLoader = ImageLoaderManager.FRESCO
+            imageLoader: ImageLoader = ImageLoaderManager.FRESCO,
+            defaultImageLoaderOptions: ImageLoaderOptions? = null
         ) {
-            val perConfig = if (config == null) {
-                ImageLoaderConfig(application)
-            } else {
-                config
-            }
+            val perConfig = config ?: ImageLoaderConfig(application)
             ImageLoaderManager.INSTANCE = ImageLoaderManager(imageLoader)
-            ImageLoaderManager.INSTANCE.init(application, perConfig)
+            ImageLoaderManager.INSTANCE.init(application, perConfig, defaultImageLoaderOptions)
         }
 
-        lateinit var INSTANCE: ImageLoaderManager
+        private lateinit var INSTANCE: ImageLoaderManager
+
+        fun getInstance(): ImageLoaderManager {
+            return INSTANCE
+        }
 
         @JvmStatic
         private val FRESCO: ImageLoader by lazy(mode = LazyThreadSafetyMode.SYNCHRONIZED) {

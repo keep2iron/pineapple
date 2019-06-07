@@ -36,38 +36,13 @@ class SampleListAdapter(private val data: List<String>) : RecyclerView.Adapter<S
 
     override fun onBindViewHolder(holder: SampleListViewHolder, position: Int) {
         // 通过 ImageLoadManager.INSTANCE 直接加载
-//        ImageLoaderManager.INSTANCE.showImageView(holder.binding.imageView, data[position], ImageLoaderOptions())
-//        holder.binding.imageUrl = data[position]
-////         通过databinding 绑定item加载
-//        holder.binding.imageUrl = data[position]
-        ImageLoaderManager.INSTANCE.showImageView(holder.binding.imageView, data[position], ImageLoaderOptions().apply {
-            isCircleImage = true
-            scaleType = ImageLoaderOptions.ScaleType.CENTER_CROP
-            placeHolderRes = R.mipmap.ic_launcher
-        })
-
-        //获取GenericDraweeHierarchy对象
-//        val hierarchy = GenericDraweeHierarchyBuilder.newInstance(holder.binding.root.resources)
-//            .setRoundingParams(RoundingParams.asCircle())
-//            //设置淡入淡出动画持续时间(单位：毫秒ms)
-////            .setFadeDuration(5000)
-//            //构建
-//            .build()
-//        hierarchy.setActualImageFocusPoint(PointF(0.5f, 0.5f))
-//        hierarchy.setPlaceholderImage(R.mipmap.ic_launcher)
-//
-//
-//        //设置Hierarchy
-//        holder.binding.imageView.hierarchy = hierarchy
-//
-//        //构建Controller
-//        val controller = Fresco.newDraweeControllerBuilder()
-//            //设置需要下载的图片地址
-//            .setUri(data[position])
-//            //构建
-//            .build()
-//
-//        //        设置Controller
-//        holder.binding.imageView.controller = controller
+        ImageLoaderManager.getInstance().showImageView(
+            holder.binding.imageView, data[position], if (position == 0) ImageLoaderOptions(
+                isCircleImage = false,
+                scaleType = ImageLoaderOptions.ScaleType.FIT_XY,
+                placeHolderRes = R.mipmap.ic_launcher,
+                isLoadGif = true
+            ) else ImageLoaderOptions()
+        )
     }
 }
