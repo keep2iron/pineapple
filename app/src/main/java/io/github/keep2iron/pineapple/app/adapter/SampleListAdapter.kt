@@ -1,17 +1,19 @@
 package io.github.keep2iron.pineapple.app.adapter
 
+import android.content.Intent
 import android.databinding.DataBindingUtil
-import android.graphics.PointF
+import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import com.facebook.drawee.backends.pipeline.Fresco
-import com.facebook.drawee.generic.GenericDraweeHierarchyBuilder
-import com.facebook.drawee.generic.RoundingParams
 import io.github.keep2iron.pineapple.ImageLoaderManager
 import io.github.keep2iron.pineapple.ImageLoaderOptions
 import io.github.keep2iron.pineapple.app.R
+import io.github.keep2iron.pineapple.app.ShareElementActivity
 import io.github.keep2iron.pineapple.app.databinding.ItemSampleListBinding
+import android.support.v4.app.ActivityOptionsCompat
+import io.github.keep2iron.pineapple.MiddlewareView
+
 
 /**
  *
@@ -21,7 +23,8 @@ import io.github.keep2iron.pineapple.app.databinding.ItemSampleListBinding
  */
 class SampleListViewHolder(val binding: ItemSampleListBinding) : RecyclerView.ViewHolder(binding.root)
 
-class SampleListAdapter(private val data: List<String>) : RecyclerView.Adapter<SampleListViewHolder>() {
+class SampleListAdapter(val activity: AppCompatActivity, private val data: List<String>) :
+    RecyclerView.Adapter<SampleListViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SampleListViewHolder {
         val binding = DataBindingUtil.inflate<ItemSampleListBinding>(
             LayoutInflater.from(parent.context.applicationContext),
@@ -40,9 +43,24 @@ class SampleListAdapter(private val data: List<String>) : RecyclerView.Adapter<S
             holder.binding.imageView, data[position], if (position == 0) ImageLoaderOptions(
                 isCircleImage = false,
                 scaleType = ImageLoaderOptions.ScaleType.FIT_XY,
-                placeHolderRes = R.mipmap.ic_launcher,
+                placeHolderRes = R.drawable.ic_launcher_background,
                 isLoadGif = true
-            ) else ImageLoaderOptions()
+            ) else ImageLoaderOptions(
+                scaleType = ImageLoaderOptions.ScaleType.CENTER_CROP
+            )
         )
+
+        holder.itemView.transitionName = "imageView"
+        holder.itemView.setOnClickListener {
+            val context = holder.itemView.context
+            val intent = Intent(context, ShareElementActivity::class.java)
+            val options = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                activity,
+                holder.binding.imageView,
+                "imageView"
+            )
+            intent.putExtra("url", data[position])
+            activity.startActivity(intent, options.toBundle())
+        }
     }
 }

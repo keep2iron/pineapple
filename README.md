@@ -9,32 +9,30 @@ pineapple使用kotlin编写的一个图片加载的封装框架。实现简单�
 ```
 implementation deps.kotlin.stdlib_jdk7
 implementation deps.fresco
-kapt deps.kotlin_databinding_compiler
+
+如果需要支持gif
+implementation deps.fresco.fresco_gif
+
 ```
 2.初始化ImageLoaderManager（不调用的话 后续会抛出异常）
 ```
-ImageLoaderManager.init(application)
-```
-3.需要注意的是所有使用网络加载图片的时候必须使用如下写法(或者自己继承该类进行显示)
-```
-<io.github.keep2iron.pineapple.MiddlewareView
-		...
-   />
-
-```
-提供databinding绑定以及手动显示图片的两种使用方法
-databinding:
-
-```
-<io.github.keep2iron.pineapple.MiddlewareView
-        android:id="@+id/imageView"
-        app:url="@{imageUrl}"
-        android:src="@mipmap/ic_launcher"
-        android:layout_width="match_parent"
-        android:layout_height="300dp"/>
-
+        ImageLoaderManager.init(
+            application,
+            ImageLoaderConfig(
+                applicationContext,
+                maxCacheCount = 300,									//最大缓存数
+                maxCacheSize = (400 * ByteConstants.MB).toLong(),		//最大缓存大小
+				cacheDirName = "cache_images",							//缓存文件夹名
+				cacheDirPath =  context.cacheDir						//默认缓存位置
+            ),
+            defaultImageLoaderOptions = ImageLoaderOptions(
+                isCircleImage = true,
+                scaleType = ImageLoaderOptions.ScaleType.FIT_CENTER,
+                placeHolderRes = R.drawable.ic_launcher_background
+            )
+        )
 ```
 普通加载
 ```
-ImageLoaderManager.INSTANCE.showImageView(holder.binding.imageView, data[position], ImageLoaderOptions())
+ImageLoaderManager.getInstance().showImageView(middleImageView, "url")
 ```

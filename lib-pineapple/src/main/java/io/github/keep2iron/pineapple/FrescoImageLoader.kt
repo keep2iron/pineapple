@@ -14,7 +14,6 @@ import com.facebook.drawee.backends.pipeline.Fresco
 import com.facebook.drawee.view.SimpleDraweeView
 import com.facebook.cache.disk.DiskCacheConfig
 import com.facebook.common.logging.FLog
-import com.facebook.common.util.ByteConstants
 import com.facebook.imagepipeline.core.ImagePipelineConfig
 import com.facebook.imagepipeline.cache.MemoryCacheParams
 import com.facebook.imagepipeline.core.ImagePipelineFactory

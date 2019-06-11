@@ -14,9 +14,18 @@ android {
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
+    signingConfigs {
+        release {
+            storeFile file ('../keep2iron.jks')
+            storePassword 'keep2iron.github.io'
+            keyAlias 'keep2iron'
+            keyPassword 'keep2iron.github.io'
+        }
+    }
     buildTypes {
         release {
-            minifyEnabled false
+            signingConfig signingConfigs.release
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -26,12 +35,11 @@ android {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
     implementation deps.kotlin.stdlib_jdk7
     implementation deps.support.app_compat
     implementation deps.support.constraint_layout
     implementation deps.support.recyclerview
-    kapt deps.kotlin_databinding_compiler
     implementation deps.fresco
     implementation deps.fresco_gif
 

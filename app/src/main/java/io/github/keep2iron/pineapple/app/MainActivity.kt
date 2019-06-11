@@ -43,7 +43,7 @@ class MainActivity : AppCompatActivity() {
         )
 
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerView)
-        recyclerView.adapter = SampleListAdapter(data)
+        recyclerView.adapter = SampleListAdapter(this,data)
     }
 
     fun setCustomDensity(activity: Activity, application: Application) {
