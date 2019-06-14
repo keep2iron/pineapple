@@ -67,15 +67,26 @@ class FrescoImageLoader : ImageLoader {
 
     private var defaultImageLoaderOptions: ImageLoaderOptions? = null
 
+    override fun getDefaultImageOptions(): ImageLoaderOptions? = defaultImageLoaderOptions
+
     override fun getConfig(): Any {
         return config
     }
 
     private val handler = Handler(Looper.getMainLooper())
 
-    override fun init(context: Application, config: ImageLoaderConfig, defaultImageLoaderOptions: ImageLoaderOptions?) {
+    override fun init(
+        context: Application,
+        config: ImageLoaderConfig,
+        defaultImageLoaderOptions: ((ImageLoaderOptions.() -> Unit)?)?
+    ) {
         this.imageLoaderConfig = config
-        this.defaultImageLoaderOptions = defaultImageLoaderOptions
+
+        this.defaultImageLoaderOptions = if (defaultImageLoaderOptions != null) {
+            ImageLoaderOptions.newClearOption(defaultImageLoaderOptions)
+        } else {
+            null
+        }
         val createMemoryCacheParams = {
             val maxHeapSize = Runtime.getRuntime().maxMemory().toInt()
             val maxMemoryCacheSize = maxHeapSize / 3 * 2//取手机内存最大值的三分之二作为可用的最大内存数
@@ -128,12 +139,12 @@ class FrescoImageLoader : ImageLoader {
 
         this.config = imagePipelineConfigBuilder.build()
         Fresco.initialize(context.applicationContext, this.config)
-        if (BuildConfig.DEBUG) {
+        if (config.debug) {
             FLog.setMinimumLoggingLevel(FLog.VERBOSE)
         }
     }
 
-    override fun showImageView(imageView: MiddlewareView, resId: Int, options: ImageLoaderOptions) {
+    override fun showImageView(imageView: MiddlewareView, resId: Int, options: (ImageLoaderOptions.() -> Unit)?) {
         this.showImageView(
             imageView,
             Uri.parse("res://" + imageView.context.applicationContext.packageName + "/" + resId),
@@ -141,15 +152,17 @@ class FrescoImageLoader : ImageLoader {
         )
     }
 
-    override fun showImageView(imageView: MiddlewareView, uri: Uri, options: ImageLoaderOptions) {
-        val newOptions = if (defaultImageLoaderOptions != null) {
-            val newOptions = ImageLoaderOptions()
-            newOptions.setOptions(defaultImageLoaderOptions!!)
-            newOptions.setOptions(options)
-            newOptions
+    private fun getImageOptions(options: (ImageLoaderOptions.() -> Unit)?): ImageLoaderOptions {
+        return if (defaultImageLoaderOptions != null) {
+            ImageLoaderOptions.newOptionWithDefaultOptions(options)
         } else {
-            options
+            ImageLoaderOptions.newClearOption(options)
         }
+
+    }
+
+    override fun showImageView(imageView: MiddlewareView, uri: Uri, options: (ImageLoaderOptions.() -> Unit)?) {
+        val newOptions = getImageOptions(options)
 
         val draweeView = imageView as SimpleDraweeView
         val requestBuilder = buildImageRequest(uri, newOptions)
@@ -211,7 +224,7 @@ class FrescoImageLoader : ImageLoader {
         return controllerBuilder
     }
 
-    override fun showImageView(imageView: MiddlewareView, url: String, options: ImageLoaderOptions) {
+    override fun showImageView(imageView: MiddlewareView, url: String, options: (ImageLoaderOptions.() -> Unit)?) {
         showImageView(imageView, Uri.parse(url), options)
     }
 
@@ -227,8 +240,14 @@ class FrescoImageLoader : ImageLoader {
         return request
     }
 
-    override fun getBitmap(context: Context, url: String, options: ImageLoaderOptions, onGetBitmap: (Bitmap?) -> Unit) {
-        val request = buildImageRequest(Uri.parse(url), options)
+    override fun getBitmap(
+        context: Context,
+        url: String,
+        onGetBitmap: (Bitmap?) -> Unit,
+        options: (ImageLoaderOptions.() -> Unit)?
+    ) {
+        val opt = getImageOptions(options)
+        val request = buildImageRequest(Uri.parse(url), opt)
         val imagePipeline = Fresco.getImagePipeline()
         val dataSource = imagePipeline.fetchDecodedImage(request.build(), context.applicationContext)
         dataSource.subscribe(object : BaseBitmapDataSubscriber() {

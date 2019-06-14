@@ -11,7 +11,7 @@ import android.support.annotation.DrawableRes
  * @version 1.0
  * @since 2018/06/25 19:59
  */
-data class ImageLoaderOptions(
+class ImageLoaderOptions private constructor(
     /**
      * 圆角
      */
@@ -48,6 +48,8 @@ data class ImageLoaderOptions(
     var smallImageUri: String? = null,
 
     /**
+     * 同时设置 placeHolderRes 和 placeHolder
+     *
      * 占位图
      */
     var placeHolder: Drawable? = null,
@@ -101,8 +103,32 @@ data class ImageLoaderOptions(
 
     companion object {
         @JvmStatic
-        fun newDefaultOption(): ImageLoaderOptions {
+        fun newOption(): ImageLoaderOptions {
             return ImageLoaderOptions()
+        }
+
+        @JvmStatic
+        fun newClearOption(block: (ImageLoaderOptions.() -> Unit)?): ImageLoaderOptions {
+            return if (block != null) {
+                newOption().apply(block)
+            } else {
+                newOption()
+            }
+        }
+
+        @JvmStatic
+        fun newOptionWithDefaultOptions(block: (ImageLoaderOptions.() -> Unit)?): ImageLoaderOptions {
+            val options = ImageLoaderOptions()
+            val defaultOptions = ImageLoaderManager.getInstance().getDefaultImageOptions()
+            if (defaultOptions != null) {
+                options.copyOptions(defaultOptions)
+            }
+
+            return if (block != null) {
+                options.apply(block)
+            } else {
+                options
+            }
         }
     }
 
@@ -122,44 +148,47 @@ data class ImageLoaderOptions(
         NONE,
     }
 
-    fun setOptions(otherOptions: ImageLoaderOptions) {
-        if (otherOptions.radius != 0f) {
+    private fun copyOptions(otherOptions: ImageLoaderOptions) {
+        if (otherOptions.radius != this.radius) {
             this.radius = otherOptions.radius
         }
-        if (otherOptions.radiusTopLeft != 0f) {
+        if (otherOptions.radiusTopLeft != this.radiusTopLeft) {
             this.radiusTopLeft = otherOptions.radiusTopLeft
         }
-        if (otherOptions.radiusTopRight != 0f) {
+        if (otherOptions.radiusTopRight != this.radiusTopRight) {
             this.radiusTopRight = otherOptions.radiusTopRight
         }
-        if (otherOptions.radiusBottomRight != 0f) {
+        if (otherOptions.radiusBottomRight != this.radiusBottomRight) {
             this.radiusBottomRight = otherOptions.radiusBottomRight
         }
-        if (otherOptions.radiusBottomLeft != 0f) {
+        if (otherOptions.radiusBottomLeft != this.radiusBottomLeft) {
             this.radiusBottomLeft = otherOptions.radiusBottomLeft
         }
-        if (otherOptions.isProgressiveLoadImage) {
+        if (otherOptions.isProgressiveLoadImage != this.isProgressiveLoadImage) {
             this.isProgressiveLoadImage = otherOptions.isProgressiveLoadImage
         }
-        if (otherOptions.isCircleImage) {
+        if (otherOptions.isCircleImage != this.isCircleImage) {
             this.isCircleImage = otherOptions.isCircleImage
         }
-        if (otherOptions.borderOverlayColor != 0) {
+        if (otherOptions.borderOverlayColor != this.borderOverlayColor) {
             this.borderOverlayColor = otherOptions.borderOverlayColor
         }
-        if (otherOptions.borderSize != 0f) {
+        if (otherOptions.borderSize != this.borderSize) {
             this.borderSize = otherOptions.borderSize
         }
-        if (otherOptions.scaleType != ScaleType.NONE) {
+        if (otherOptions.scaleType != this.scaleType) {
             this.scaleType = otherOptions.scaleType
         }
-        if (otherOptions.smallImageUri != null) {
+        if (otherOptions.smallImageUri != this.smallImageUri) {
             this.smallImageUri = otherOptions.smallImageUri
         }
-        if (otherOptions.placeHolderRes != 0) {
+        if (otherOptions.placeHolder != this.placeHolder) {
+            this.placeHolder = otherOptions.placeHolder
+        }
+        if (otherOptions.placeHolderRes != this.placeHolderRes) {
             this.placeHolderRes = otherOptions.placeHolderRes
         }
-        if (otherOptions.matrix != null) {
+        if (otherOptions.matrix != this.matrix) {
             this.matrix = otherOptions.matrix
         }
         if (otherOptions.isLoadGif) {
@@ -174,19 +203,17 @@ data class ImageLoaderOptions(
         if (otherOptions.imageHeight > 0) {
             this.imageHeight = otherOptions.imageHeight
         }
-        if (otherOptions.onFinalImageSetListener != null) {
+        if (otherOptions.onFinalImageSetListener != this.onFinalImageSetListener) {
             this.onFinalImageSetListener = otherOptions.onFinalImageSetListener
         }
-        if (otherOptions.onImageFailure != null) {
+        if (otherOptions.onImageFailure != this.onImageFailure) {
             this.onImageFailure = otherOptions.onImageFailure
         }
-        if (otherOptions.iterations > 0) {
+        if (otherOptions.iterations > this.iterations) {
             this.iterations = otherOptions.iterations
         }
-        if (otherOptions.blurRadius > 0) {
+        if (otherOptions.blurRadius > this.blurRadius) {
             this.blurRadius = otherOptions.blurRadius
         }
     }
-
-
 }

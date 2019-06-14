@@ -1,6 +1,5 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-kapt'
 
 android {
     compileSdkVersion versions.build.target_sdk
@@ -36,7 +35,7 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
-    implementation deps.kotlin.stdlib_jdk7
+    implementation deps.kotlin.stdlib_jdk8
     implementation deps.support.app_compat
     implementation deps.support.constraint_layout
     implementation deps.support.recyclerview

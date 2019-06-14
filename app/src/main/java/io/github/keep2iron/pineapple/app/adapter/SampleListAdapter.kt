@@ -40,15 +40,20 @@ class SampleListAdapter(val activity: AppCompatActivity, private val data: List<
     override fun onBindViewHolder(holder: SampleListViewHolder, position: Int) {
         // 通过 ImageLoadManager.INSTANCE 直接加载
         ImageLoaderManager.getInstance().showImageView(
-            holder.binding.imageView, data[position], if (position == 0) ImageLoaderOptions(
-                isCircleImage = false,
-                scaleType = ImageLoaderOptions.ScaleType.FIT_XY,
-                placeHolderRes = R.drawable.ic_launcher_background,
+            holder.binding.imageView, data[position]
+        ) {
+            if (position == 0) {
+                isCircleImage = false
+                scaleType = ImageLoaderOptions.ScaleType.FIT_XY
+                placeHolderRes = R.color.colorAccent
+                placeHolder = null
                 isLoadGif = true
-            ) else ImageLoaderOptions(
+            } else {
                 scaleType = ImageLoaderOptions.ScaleType.CENTER_CROP
-            )
-        )
+                placeHolderRes = R.color.colorAccent
+                placeHolder = null
+            }
+        }
 
         holder.itemView.transitionName = "imageView"
         holder.itemView.setOnClickListener {

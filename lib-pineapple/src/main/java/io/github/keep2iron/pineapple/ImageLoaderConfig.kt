@@ -25,5 +25,10 @@ class ImageLoaderConfig(
     /**
      * 缓存的路径
      */
-    var cacheDirPath: File = context.cacheDir
+    var cacheDirPath: File = context.cacheDir,
+
+    /**
+     * 是否是调试模式
+     */
+    var debug: Boolean = false
 )

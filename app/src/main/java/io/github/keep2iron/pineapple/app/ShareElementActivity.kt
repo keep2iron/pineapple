@@ -15,22 +15,24 @@ class ShareElementActivity : AppCompatActivity() {
         setContentView(R.layout.activity_share_element)
         window.sharedElementEnterTransition = DraweeTransition.createTransitionSet(
             ScalingUtils.ScaleType.CENTER_CROP,
-            ScalingUtils.ScaleType.CENTER_CROP) // 进入
+            ScalingUtils.ScaleType.FIT_CENTER
+        ) // 进入
         window.sharedElementReturnTransition = DraweeTransition.createTransitionSet(
-            ScalingUtils.ScaleType.CENTER_CROP,
-            ScalingUtils.ScaleType.CENTER_CROP) // 返回
+            ScalingUtils.ScaleType.FIT_CENTER,
+            ScalingUtils.ScaleType.CENTER_CROP
+        ) // 返回
 
         val imageView = findViewById<MiddlewareView>(R.id.imageView)
         imageView.transitionName = "imageView"
         val url = intent.getStringExtra("url")
         ImageLoaderManager.getInstance().showImageView(
-            imageView, url, ImageLoaderOptions(
-                isCircleImage = false,
-                scaleType = ImageLoaderOptions.ScaleType.CENTER_CROP,
-                placeHolderRes = R.drawable.ic_launcher_background,
-                isLoadGif = true
-            )
-        )
+            imageView, url
+        ) {
+            isCircleImage = false
+            scaleType = ImageLoaderOptions.ScaleType.FIT_CENTER
+            placeHolderRes = R.drawable.ic_launcher_background
+            isLoadGif = true
+        }
     }
 
 }
