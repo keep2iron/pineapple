@@ -2,6 +2,7 @@ package io.github.keep2iron.pineapple.app.adapter
 
 import android.content.Intent
 import android.databinding.DataBindingUtil
+import android.os.Build
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -55,7 +56,9 @@ class SampleListAdapter(val activity: AppCompatActivity, private val data: List<
             }
         }
 
-        holder.itemView.transitionName = "imageView"
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            holder.itemView.transitionName = "imageView"
+        }
         holder.itemView.setOnClickListener {
             val context = holder.itemView.context
             val intent = Intent(context, ShareElementActivity::class.java)
