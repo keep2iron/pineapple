@@ -19,7 +19,6 @@ dependencies {
     implementation 'com.github.keep2iron:pineapple:$latest_version'
 
 	implementation deps.fresco
-
 	// if you want to support gif add this
 	implementation deps.fresco.fresco_gif
 }
@@ -69,11 +68,11 @@ ImageLoaderManager.getInstance().showImageView(
 }
 ```
 
-#### ProGuard
+## ProGuard
 
 No need......
 
-#### License
+## License
 
 	Copyright 2019 Keep2iron.
 	
