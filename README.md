@@ -12,7 +12,7 @@ Pineapple is a image loader library.
 gradle:
 ```groovy
 repositories {
-	maven { url 'https://jitpack.io' }
+    maven { url 'https://jitpack.io' }
 }
 
 dependencies {
