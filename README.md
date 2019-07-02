@@ -17,8 +17,8 @@ repositories {
 
 dependencies {
     implementation 'com.github.keep2iron:pineapple:$latest_version'
-
-	implementation deps.fresco
+    
+    implementation deps.fresco
 	// if you want to support gif add this
 	implementation deps.fresco.fresco_gif
 }
