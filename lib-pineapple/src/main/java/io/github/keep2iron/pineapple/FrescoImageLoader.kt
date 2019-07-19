@@ -340,8 +340,8 @@ class FrescoImageLoader : ImageLoader {
         val cornersRadius = RoundingParams.fromCornersRadii(
             options.radiusTopLeft,
             options.radiusTopRight,
-            options.radiusBottomLeft,
-            options.radiusBottomRight
+            options.radiusBottomRight,
+            options.radiusBottomLeft
         )
         draweeView.hierarchy.roundingParams = cornersRadius
     }
