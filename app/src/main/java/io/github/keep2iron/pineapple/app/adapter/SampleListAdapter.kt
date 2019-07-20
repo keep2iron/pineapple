@@ -46,13 +46,12 @@ class SampleListAdapter(val activity: AppCompatActivity, private val data: List<
             if (position == 0) {
                 isCircleImage = false
                 scaleType = ImageLoaderOptions.ScaleType.FIT_XY
-                placeHolderRes = R.color.colorAccent
                 placeHolder = null
                 isLoadGif = true
             } else {
                 scaleType = ImageLoaderOptions.ScaleType.CENTER_CROP
-                placeHolderRes = R.color.colorAccent
                 placeHolder = null
+                isLoadGif = true
             }
         }
 

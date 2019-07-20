@@ -196,10 +196,10 @@ class FrescoImageLoader : ImageLoader {
 
         val controllerListener = object : BaseControllerListener<ImageInfo>() {
             override fun onFinalImageSet(id: String?, imageInfo: ImageInfo?, animatable: Animatable?) {
+                if (imageInfo == null) {
+                    return
+                }
                 if (options.isSetByImageSize) {
-                    if (imageInfo == null) {
-                        return
-                    }
                     val layoutParams = draweeView.layoutParams
                     val height = imageInfo.height
                     val width = imageInfo.width
@@ -211,7 +211,7 @@ class FrescoImageLoader : ImageLoader {
                     }
                     draweeView.layoutParams = layoutParams
                 }
-                options.onFinalImageSetListener?.invoke()
+                options.onFinalImageSetListener?.invoke(imageInfo.width, imageInfo.height)
             }
 
             override fun onFailure(id: String?, throwable: Throwable?) {

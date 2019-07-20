@@ -84,7 +84,7 @@ class ImageLoaderOptions private constructor(
     /**
      * 当图片被设置时触发监听
      */
-    var onFinalImageSetListener: (() -> Unit)? = null,
+    var onFinalImageSetListener: ((width: Int, height: Int) -> Unit)? = null,
 
     /**
      * 当图片加载失败
