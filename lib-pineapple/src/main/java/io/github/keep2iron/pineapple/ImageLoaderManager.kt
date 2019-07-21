@@ -36,7 +36,7 @@ class ImageLoaderManager private constructor(private val imageLoader: ImageLoade
         imageLoader.showImageView(imageView, uri, options)
     }
 
-    override fun showImageView(imageView: MiddlewareView, resId: Int, options: ((ImageLoaderOptions.() -> Unit)?)?) {
+    override fun showImageView(imageView: MiddlewareView, resId: Int, options: (ImageLoaderOptions.() -> Unit)?) {
         imageLoader.showImageView(imageView, resId, options)
     }
 
@@ -72,7 +72,7 @@ class ImageLoaderManager private constructor(private val imageLoader: ImageLoade
             application: Application,
             config: ImageLoaderConfig? = null,
             imageLoader: ImageLoader = FRESCO,
-            defaultImageLoaderOptions: ((ImageLoaderOptions.() -> Unit)?)? = null
+            defaultImageLoaderOptions: (ImageLoaderOptions.() -> Unit)? = null
         ) {
             val perConfig = config ?: ImageLoaderConfig(application)
             INSTANCE = ImageLoaderManager(imageLoader)

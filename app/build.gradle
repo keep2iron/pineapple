@@ -13,17 +13,8 @@ android {
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
-    signingConfigs {
-        release {
-            storeFile file ('../keep2iron.jks')
-            storePassword 'keep2iron.github.io'
-            keyAlias 'keep2iron'
-            keyPassword 'keep2iron.github.io'
-        }
-    }
     buildTypes {
         release {
-            signingConfig signingConfigs.release
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
@@ -31,6 +22,15 @@ android {
     dataBinding {
         enabled true
     }
+}
+
+repositories {
+    maven{
+        url {
+            "https://dl.bintray.com/keep2iron/maven/"
+        }
+    }
+
 }
 
 dependencies {
@@ -43,6 +43,7 @@ dependencies {
     implementation deps.fresco_gif
 
     api project(':lib-pineapple')
+//    implementation 'io.github.keep2iron:pineapple:0.0.1'
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'

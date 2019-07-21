@@ -78,7 +78,7 @@ class FrescoImageLoader : ImageLoader {
     override fun init(
         context: Application,
         config: ImageLoaderConfig,
-        defaultImageLoaderOptions: ((ImageLoaderOptions.() -> Unit)?)?
+        defaultImageLoaderOptions: (ImageLoaderOptions.() -> Unit)?
     ) {
         this.imageLoaderConfig = config
 
