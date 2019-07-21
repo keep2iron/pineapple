@@ -1,7 +1,7 @@
-![](/images/banner.png)
+![](images/banner.png)
 
 # Pineapple
-[![Release](https://jitpack.io/v/keep2iron/pineapple.svg)](https://jitpack.io/v/#keep2iron/pineapple) ![BuildStatus](https://travis-ci.org/keep2iron/pineapple.svg?branch=master)
+![Release](https://api.bintray.com/packages/keep2iron/maven/pineapple/images/download.svg) ![BuildStatus](https://travis-ci.org/keep2iron/pineapple.svg?branch=master)
 
 Pineapple is a image loader library.
 - Base on kotlin
@@ -9,14 +9,12 @@ Pineapple is a image loader library.
 
 # Download
 
-gradle:
+#### install
+
 ```groovy
-repositories {
-    maven { url 'https://jitpack.io' }
-}
 
 dependencies {
-    implementation 'com.github.keep2iron:pineapple:$latest_version'
+    implementation 'io.github.keep2iron:pineapple:$latest_version'
     
     implementation deps.fresco
     // if you want to support gif add this
@@ -31,16 +29,15 @@ ImageLoaderManager.init(
     application,
     ImageLoaderConfig(
         applicationContext,
-        maxCacheCount = 300,									
-        maxCacheSize = (400 * ByteConstants.MB).toLong(),
-		cacheDirName = "cache_images",
-		cacheDirPath =  context.cacheDir
+        maxCacheCount = 300,
+        maxCacheSize = (400 * ByteConstants.MB).toLong()
     ),
-    defaultImageLoaderOptions = ImageLoaderOptions(
-        isCircleImage = true,
-        scaleType = ImageLoaderOptions.ScaleType.FIT_CENTER,
-        placeHolderRes = R.drawable.ic_launcher_background
-    )
+    defaultImageLoaderOptions = {
+        isCircleImage = true
+        scaleType = ImageLoaderOptions.ScaleType.FIT_CENTER
+        placeHolderRes = R.mipmap.ic_launcher
+        placeHolder = ResourcesCompat.getDrawable(resources, R.mipmap.ic_launcher, null)
+    }
 )
 ```
 
@@ -60,11 +57,12 @@ ImageLoaderManager.getInstance().showImageView(middleImageView, url)
 Load an image url by option
 ```kotlin
 ImageLoaderManager.getInstance().showImageView(
-    middleImageView, url
+    holder.binding.imageView, data[position]
 ) {
-    scaleType = ImageLoaderOptions.ScaleType.CENTER_CROP
-    placeHolderRes = R.color.colorAccent
+    isCircleImage = true
+    scaleType = ImageLoaderOptions.ScaleType.FIT_XY
     placeHolder = null
+    isLoadGif = true
 }
 ```
 
