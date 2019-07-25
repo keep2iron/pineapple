@@ -7,13 +7,7 @@ android:
     - build-tools-29.0.0
     - android-28
     - extra-android-m2repository
-
-git:
-  submodules: false
-
-before_install:
-  - git submodule update --init --recursive
-
+    -
 jdk:
   - oraclejdk8
 
