@@ -11,7 +11,7 @@ android {
         targetSdkVersion versions.build.target_sdk
         versionCode 1
         versionName "1.0"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
@@ -22,15 +22,6 @@ android {
     dataBinding {
         enabled true
     }
-}
-
-repositories {
-    maven{
-        url {
-            "https://dl.bintray.com/keep2iron/maven/"
-        }
-    }
-
 }
 
 dependencies {
@@ -46,6 +37,6 @@ dependencies {
 //    implementation 'io.github.keep2iron:pineapple:0.0.1'
 
     testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.2'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    androidTestImplementation 'androidx.test:runner:1.1.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0'
 }

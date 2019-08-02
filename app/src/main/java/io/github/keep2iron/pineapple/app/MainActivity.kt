@@ -1,9 +1,9 @@
 package io.github.keep2iron.pineapple.app
 
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.support.v4.content.res.ResourcesCompat
-import android.support.v7.widget.RecyclerView
+import androidx.core.content.res.ResourcesCompat
+import androidx.recyclerview.widget.RecyclerView
 import com.facebook.common.util.ByteConstants
 import io.github.keep2iron.pineapple.ImageLoaderConfig
 import io.github.keep2iron.pineapple.ImageLoaderManager
@@ -39,7 +39,7 @@ class MainActivity : AppCompatActivity() {
             "https://alpha-head.oss-cn-shenzhen.aliyuncs.com/65c57a0e-ccb8-41be-"
         )
 
-        val recyclerView = findViewById<RecyclerView>(R.id.recyclerView)
+        val recyclerView = findViewById<androidx.recyclerview.widget.RecyclerView>(R.id.recyclerView)
         recyclerView.adapter = SampleListAdapter(this, data)
     }
 }

@@ -1,10 +1,10 @@
 package io.github.keep2iron.pineapple.app.adapter
 
 import android.content.Intent
-import android.databinding.DataBindingUtil
+import androidx.databinding.DataBindingUtil
 import android.os.Build
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.RecyclerView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import io.github.keep2iron.pineapple.ImageLoaderManager
@@ -12,7 +12,7 @@ import io.github.keep2iron.pineapple.ImageLoaderOptions
 import io.github.keep2iron.pineapple.app.R
 import io.github.keep2iron.pineapple.app.ShareElementActivity
 import io.github.keep2iron.pineapple.app.databinding.ItemSampleListBinding
-import android.support.v4.app.ActivityOptionsCompat
+import androidx.core.app.ActivityOptionsCompat
 import io.github.keep2iron.pineapple.MiddlewareView
 
 
@@ -22,10 +22,10 @@ import io.github.keep2iron.pineapple.MiddlewareView
  * @version 1.0
  * @date 2018/10/29
  */
-class SampleListViewHolder(val binding: ItemSampleListBinding) : RecyclerView.ViewHolder(binding.root)
+class SampleListViewHolder(val binding: ItemSampleListBinding) : androidx.recyclerview.widget.RecyclerView.ViewHolder(binding.root)
 
 class SampleListAdapter(val activity: AppCompatActivity, private val data: List<String>) :
-    RecyclerView.Adapter<SampleListViewHolder>() {
+    androidx.recyclerview.widget.RecyclerView.Adapter<SampleListViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SampleListViewHolder {
         val binding = DataBindingUtil.inflate<ItemSampleListBinding>(
             LayoutInflater.from(parent.context.applicationContext),

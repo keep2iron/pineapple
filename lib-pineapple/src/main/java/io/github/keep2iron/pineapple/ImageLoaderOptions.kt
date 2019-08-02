@@ -2,8 +2,8 @@ package io.github.keep2iron.pineapple
 
 import android.graphics.Matrix
 import android.graphics.drawable.Drawable
-import android.support.annotation.ColorInt
-import android.support.annotation.DrawableRes
+import androidx.annotation.ColorInt
+import androidx.annotation.DrawableRes
 
 /**
  *
