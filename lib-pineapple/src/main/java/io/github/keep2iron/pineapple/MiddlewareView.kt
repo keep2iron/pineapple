@@ -12,15 +12,23 @@ import com.facebook.drawee.view.SimpleDraweeView
  */
 open class MiddlewareView : SimpleDraweeView {
 
-    constructor(context: Context) : super(context)
-    constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
-    constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(context, attrs, defStyle)
+  constructor(context: Context) : super(context)
+  constructor(
+    context: Context,
+    attrs: AttributeSet
+  ) : super(context, attrs)
 
-    override fun onVisibilityAggregated(isVisible: Boolean) {
-        super.onVisibilityAggregated(isVisible)
-        if (drawable != null) {
-            drawable.setVisible(true, false)
-        }
+  constructor(
+    context: Context,
+    attrs: AttributeSet,
+    defStyle: Int
+  ) : super(context, attrs, defStyle)
+
+  override fun onVisibilityAggregated(isVisible: Boolean) {
+    super.onVisibilityAggregated(isVisible)
+    if (drawable != null) {
+      drawable.setVisible(true, false)
     }
+  }
 
 }
