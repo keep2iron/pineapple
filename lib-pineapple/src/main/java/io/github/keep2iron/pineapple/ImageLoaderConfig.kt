@@ -28,6 +28,12 @@ class ImageLoaderConfig(
   var cacheDirPath: File = context.cacheDir,
 
   /**
+   * option cache 的最大大小
+   */
+  var optionCacheSize:Int = 30,
+
+
+  /**
    * 是否是调试模式
    */
   var debug: Boolean = false

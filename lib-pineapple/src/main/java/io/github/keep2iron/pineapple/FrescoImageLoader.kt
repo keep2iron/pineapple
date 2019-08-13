@@ -10,6 +10,7 @@ import android.graphics.drawable.Animatable
 import android.net.Uri
 import android.os.Handler
 import android.os.Looper
+import android.util.LruCache
 import com.facebook.cache.disk.DiskCacheConfig
 import com.facebook.common.logging.FLog
 import com.facebook.common.memory.MemoryTrimType
@@ -75,6 +76,8 @@ class FrescoImageLoader : ImageLoader {
 
   private val handler = Handler(Looper.getMainLooper())
 
+  private lateinit var cache: LruCache<Uri, ImageLoaderOptions>
+
   override fun init(
     context: Application,
     config: ImageLoaderConfig,
@@ -89,29 +92,29 @@ class FrescoImageLoader : ImageLoader {
     }
     val createMemoryCacheParams = {
       val maxHeapSize = Runtime.getRuntime()
-          .maxMemory()
-          .toInt()
+        .maxMemory()
+        .toInt()
       val maxMemoryCacheSize = maxHeapSize / 3 * 2//取手机内存最大值的三分之二作为可用的最大内存数
       MemoryCacheParams( //
-          // 可用最大内存数，以字节为单位
-          maxMemoryCacheSize,
-          // 内存中允许的最多图片数量
-          config.maxCacheCount,
-          // 内存中准备清理但是尚未删除的总图片所可用的最大内存数，以字节为单位
-          Integer.MAX_VALUE,
-          // 内存中准备清除的图片最大数量
-          Integer.MAX_VALUE,
-          // 内存中单图片的最大大小
-          Integer.MAX_VALUE
+        // 可用最大内存数，以字节为单位
+        maxMemoryCacheSize,
+        // 内存中允许的最多图片数量
+        config.maxCacheCount,
+        // 内存中准备清理但是尚未删除的总图片所可用的最大内存数，以字节为单位
+        Integer.MAX_VALUE,
+        // 内存中准备清除的图片最大数量
+        Integer.MAX_VALUE,
+        // 内存中单图片的最大大小
+        Integer.MAX_VALUE
       )
     }
     val imagePipelineConfigBuilder = ImagePipelineConfig.newBuilder(context)
     imagePipelineConfigBuilder.setMainDiskCacheConfig(
-        DiskCacheConfig.newBuilder(context)
-            .setBaseDirectoryPath(config.cacheDirPath)//设置磁盘缓存的路径
-            .setBaseDirectoryName(config.cacheDirName)//设置磁盘缓存文件夹的名称
-            .setMaxCacheSize(config.maxCacheSize)//设置磁盘缓存的大小
-            .build()
+      DiskCacheConfig.newBuilder(context)
+        .setBaseDirectoryPath(config.cacheDirPath)//设置磁盘缓存的路径
+        .setBaseDirectoryName(config.cacheDirName)//设置磁盘缓存文件夹的名称
+        .setMaxCacheSize(config.maxCacheSize)//设置磁盘缓存的大小
+        .build()
     )
     imagePipelineConfigBuilder.isDownsampleEnabled = true
     //设置已解码的内存缓存（Bitmap缓存）
@@ -127,12 +130,12 @@ class FrescoImageLoader : ImageLoader {
     memoryTrimmableRegistry.registerMemoryTrimmable { trimType ->
       val suggestedTrimRatio = trimType.suggestedTrimRatio
       if (MemoryTrimType.OnCloseToDalvikHeapLimit.suggestedTrimRatio == suggestedTrimRatio
-          || MemoryTrimType.OnSystemLowMemoryWhileAppInBackground.suggestedTrimRatio == suggestedTrimRatio
-          || MemoryTrimType.OnSystemLowMemoryWhileAppInForeground.suggestedTrimRatio == suggestedTrimRatio
+        || MemoryTrimType.OnSystemLowMemoryWhileAppInBackground.suggestedTrimRatio == suggestedTrimRatio
+        || MemoryTrimType.OnSystemLowMemoryWhileAppInForeground.suggestedTrimRatio == suggestedTrimRatio
       ) {
         //清空内存缓存
         ImagePipelineFactory.getInstance()
-            .imagePipeline.clearMemoryCaches()
+          .imagePipeline.clearMemoryCaches()
       }
     }
     imagePipelineConfigBuilder.setProgressiveJpegConfig(SimpleProgressiveJpegConfig())
@@ -145,6 +148,8 @@ class FrescoImageLoader : ImageLoader {
     if (config.debug) {
       FLog.setMinimumLoggingLevel(FLog.VERBOSE)
     }
+
+    cache = LruCache(config.optionCacheSize)
   }
 
   override fun showImageView(
@@ -153,19 +158,36 @@ class FrescoImageLoader : ImageLoader {
     options: (ImageLoaderOptions.() -> Unit)?
   ) {
     this.showImageView(
-        imageView,
-        Uri.parse("res://" + imageView.context.applicationContext.packageName + "/" + resId),
-        options
+      imageView,
+      Uri.parse("res://" + imageView.context.applicationContext.packageName + "/" + resId),
+      options
     )
   }
 
-  private fun getImageOptions(options: (ImageLoaderOptions.() -> Unit)?): ImageLoaderOptions {
-    return if (defaultImageLoaderOptions != null) {
-      ImageLoaderOptions.newOptionWithDefaultOptions(options)
+  private fun getImageOptions(
+    uri: Uri,
+    options: (ImageLoaderOptions.() -> Unit)?
+  ): ImageLoaderOptions {
+    var option: ImageLoaderOptions? = cache.get(uri)
+    if (option == null) {
+      val newOption = if (defaultImageLoaderOptions != null) {
+        ImageLoaderOptions.newOptionWithDefaultOptions(options)
+      } else {
+        ImageLoaderOptions.newClearOption(options)
+      }
+      cache.put(uri, newOption)
+      option = newOption
     } else {
-      ImageLoaderOptions.newClearOption(options)
+      if (defaultImageLoaderOptions != null) {
+        option.copyOptions(defaultImageLoaderOptions!!)
+      } else {
+        option.clear()
+      }
+      if (options != null) {
+        option.apply(options)
+      }
     }
-
+    return option
   }
 
   override fun showImageView(
@@ -173,7 +195,7 @@ class FrescoImageLoader : ImageLoader {
     uri: Uri,
     options: (ImageLoaderOptions.() -> Unit)?
   ) {
-    val newOptions = getImageOptions(options)
+    val newOptions = getImageOptions(uri, options)
 
     val draweeView = imageView as SimpleDraweeView
     val requestBuilder = buildImageRequest(uri, newOptions)
@@ -185,9 +207,9 @@ class FrescoImageLoader : ImageLoader {
     if (newOptions.isLoadGif) {
       controllerBuilder.autoPlayAnimations = true
     }
-    newOptions.smallImageUri?.let { smallUrl ->
+    if (newOptions.smallImageUri != null) {
       controllerBuilder.lowResImageRequest =
-        buildImageRequest(Uri.parse(smallUrl), newOptions).build()
+        buildImageRequest(Uri.parse(newOptions.smallImageUri), newOptions).build()
     }
     val controller = controllerBuilder.build()
     setImageLoaderOptions(newOptions, draweeView)
@@ -200,49 +222,51 @@ class FrescoImageLoader : ImageLoader {
     options: ImageLoaderOptions
   ): PipelineDraweeControllerBuilder {
     val controllerBuilder = Fresco.newDraweeControllerBuilder()
-        .setImageRequest(request.build())
-        .setOldController(draweeView.controller)
+      .setImageRequest(request.build())
+      .setOldController(draweeView.controller)
 
     if (options.isSetByImageSize && options.imageWidth <= 0) {
       throw IllegalArgumentException(
-          "if you set options isSetByImageSize,you must set imageWidth,because compute height dependency by imageWidth."
+        "if you set options isSetByImageSize,you must set imageWidth,because compute height dependency by imageWidth."
       )
     }
 
-    val controllerListener = object : BaseControllerListener<ImageInfo>() {
-      override fun onFinalImageSet(
-        id: String?,
-        imageInfo: ImageInfo?,
-        animatable: Animatable?
-      ) {
-        if (imageInfo == null) {
-          return
-        }
-        if (options.isSetByImageSize) {
-          val layoutParams = draweeView.layoutParams
-          val height = imageInfo.height
-          val width = imageInfo.width
-          layoutParams.width = options.imageWidth
-          if (options.imageHeight <= 0) {
-            layoutParams.height = (options.imageWidth.toFloat() / width * height).toInt()
-          } else {
-            layoutParams.height = options.imageHeight
+    if (options.isSetByImageSize || options.onFinalImageSetListener != null || options.onImageFailure != null) {
+      val controllerListener = object : BaseControllerListener<ImageInfo>() {
+        override fun onFinalImageSet(
+          id: String?,
+          imageInfo: ImageInfo?,
+          animatable: Animatable?
+        ) {
+          if (imageInfo == null) {
+            return
           }
-          draweeView.layoutParams = layoutParams
+          if (options.isSetByImageSize) {
+            val layoutParams = draweeView.layoutParams
+            val height = imageInfo.height
+            val width = imageInfo.width
+            layoutParams.width = options.imageWidth
+            if (options.imageHeight <= 0) {
+              layoutParams.height = (options.imageWidth.toFloat() / width * height).toInt()
+            } else {
+              layoutParams.height = options.imageHeight
+            }
+            draweeView.layoutParams = layoutParams
+          }
+          options.onFinalImageSetListener?.invoke(imageInfo.width, imageInfo.height)
         }
-        options.onFinalImageSetListener?.invoke(imageInfo.width, imageInfo.height)
-      }
 
-      override fun onFailure(
-        id: String?,
-        throwable: Throwable?
-      ) {
-        super.onFailure(id, throwable)
+        override fun onFailure(
+          id: String?,
+          throwable: Throwable?
+        ) {
+          super.onFailure(id, throwable)
 
-        options.onImageFailure?.invoke()
+          options.onImageFailure?.invoke()
+        }
       }
+      controllerBuilder.controllerListener = controllerListener
     }
-    controllerBuilder.controllerListener = controllerListener
     return controllerBuilder
   }
 
@@ -259,10 +283,10 @@ class FrescoImageLoader : ImageLoader {
     options: ImageLoaderOptions
   ): ImageRequestBuilder {
     val request = ImageRequestBuilder.newBuilderWithSource(uri)
-        //本功能仅支持本地URI，并且是JPEG图片格式 如果本地JPEG图，有EXIF的缩略图，image pipeline 可以立刻返回它作为一个缩略图
-        .setLocalThumbnailPreviewsEnabled(true)
-        //渐进式加载
-        .setProgressiveRenderingEnabled(options.isProgressiveLoadImage)
+      //本功能仅支持本地URI，并且是JPEG图片格式 如果本地JPEG图，有EXIF的缩略图，image pipeline 可以立刻返回它作为一个缩略图
+      .setLocalThumbnailPreviewsEnabled(true)
+      //渐进式加载
+      .setProgressiveRenderingEnabled(options.isProgressiveLoadImage)
     if (options.imageWidth > 0 && options.imageHeight > 0) {
       request.resizeOptions = ResizeOptions(options.imageWidth, options.imageHeight)
     }
@@ -275,7 +299,7 @@ class FrescoImageLoader : ImageLoader {
     onGetBitmap: (Bitmap?) -> Unit,
     options: (ImageLoaderOptions.() -> Unit)?
   ) {
-    val opt = getImageOptions(options)
+    val opt = getImageOptions(Uri.parse(url), options)
     val request = buildImageRequest(Uri.parse(url), opt)
     val imagePipeline = Fresco.getImagePipeline()
     val dataSource = imagePipeline.fetchDecodedImage(request.build(), context.applicationContext)
@@ -302,18 +326,18 @@ class FrescoImageLoader : ImageLoader {
     val builder = GenericDraweeHierarchyBuilder(draweeView.context.resources)
 
     val hierarchy = builder
-        .setFadeDuration(300)
-        .build()
+      .setFadeDuration(options.animationDuration)
+      .build()
     draweeView.hierarchy = hierarchy
 
     if (options.isCircleImage) {
       loadCircleImage(draweeView)
     }
     if (options.radius > 0 ||
-        options.radiusTopLeft > 0 ||
-        options.radiusTopRight > 0 ||
-        options.radiusBottomLeft > 0 ||
-        options.radiusBottomRight > 0
+      options.radiusTopLeft > 0 ||
+      options.radiusTopRight > 0 ||
+      options.radiusBottomLeft > 0 ||
+      options.radiusBottomRight > 0
     ) {
       loadRadiusImage(draweeView, options)
     }
@@ -375,10 +399,10 @@ class FrescoImageLoader : ImageLoader {
     }
 
     val cornersRadius = RoundingParams.fromCornersRadii(
-        options.radiusTopLeft,
-        options.radiusTopRight,
-        options.radiusBottomRight,
-        options.radiusBottomLeft
+      options.radiusTopLeft,
+      options.radiusTopRight,
+      options.radiusBottomRight,
+      options.radiusBottomLeft
     )
     draweeView.hierarchy.roundingParams = cornersRadius
   }
@@ -389,7 +413,7 @@ class FrescoImageLoader : ImageLoader {
     borderSize: Float
   ) {
     val roundingParams = draweeView.hierarchy.roundingParams
-        ?: throw IllegalArgumentException("you must set radius or set a circle image!!")
+      ?: throw IllegalArgumentException("you must set radius or set a circle image!!")
     if (borderSize <= 0) {
       throw IllegalArgumentException("do you forget set a borderSize?")
     }
@@ -399,7 +423,7 @@ class FrescoImageLoader : ImageLoader {
   override fun cleanMemory(context: Context) {
     //清空内存缓存
     ImagePipelineFactory.getInstance()
-        .imagePipeline.clearMemoryCaches()
+      .imagePipeline.clearMemoryCaches()
   }
 
   override fun clearAllCache() {
@@ -408,8 +432,10 @@ class FrescoImageLoader : ImageLoader {
   }
 
   override fun pause(context: Context) {
+    Fresco.getImagePipeline().pause()
   }
 
   override fun resume(context: Context) {
+    Fresco.getImagePipeline().resume()
   }
 }
