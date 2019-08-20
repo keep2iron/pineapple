@@ -70,7 +70,7 @@ class ImageLoaderManager private constructor(private val imageLoader: ImageLoade
   }
 
   override fun resume(context: Context) {
-    imageLoader.pause(context)
+    imageLoader.resume(context)
   }
 
   override fun clearAllCache() {
