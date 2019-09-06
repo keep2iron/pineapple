@@ -11,6 +11,7 @@ import android.net.Uri
 import android.os.Handler
 import android.os.Looper
 import android.util.LruCache
+import android.view.View
 import com.facebook.cache.disk.DiskCacheConfig
 import com.facebook.common.logging.FLog
 import com.facebook.common.memory.MemoryTrimType
@@ -48,7 +49,7 @@ class MatrixScaleType(private val matrix: Matrix) : ScalingUtils.ScaleType {
   ): Matrix {
     val sX = parentBounds.width().toFloat() / childWidth
     val sY = parentBounds.height().toFloat() / childHeight
-    val scale = Math.max(sX, sY)
+    val scale = sX.coerceAtLeast(sY)
     outTransform.postConcat(matrix)
     outTransform.postScale(scale, scale)
     return outTransform
@@ -61,7 +62,7 @@ class MatrixScaleType(private val matrix: Matrix) : ScalingUtils.ScaleType {
  * @version 1.0
  * @since 2018/06/25 20:12
  */
-class FrescoImageLoader : ImageLoader {
+class ImageLoaderImpl : ImageLoader {
   private lateinit var config: ImagePipelineConfig
 
   private lateinit var imageLoaderConfig: ImageLoaderConfig
@@ -153,7 +154,7 @@ class FrescoImageLoader : ImageLoader {
   }
 
   override fun showImageView(
-    imageView: MiddlewareView,
+    imageView: View,
     resId: Int,
     options: (ImageLoaderOptions.() -> Unit)?
   ) {
@@ -191,7 +192,7 @@ class FrescoImageLoader : ImageLoader {
   }
 
   override fun showImageView(
-    imageView: MiddlewareView,
+    imageView: View,
     uri: Uri,
     options: (ImageLoaderOptions.() -> Unit)?
   ) {
@@ -225,11 +226,7 @@ class FrescoImageLoader : ImageLoader {
       .setImageRequest(request.build())
       .setOldController(draweeView.controller)
 
-    if (options.isSetByImageSize && options.imageWidth <= 0) {
-      throw IllegalArgumentException(
-        "if you set options isSetByImageSize,you must set imageWidth,because compute height dependency by imageWidth."
-      )
-    }
+    require(!(options.isSetByImageSize && options.imageWidth <= 0)) { "if you set options isSetByImageSize,you must set imageWidth,because compute height dependency by imageWidth." }
 
     if (options.isSetByImageSize || options.onFinalImageSetListener != null || options.onImageFailure != null) {
       val controllerListener = object : BaseControllerListener<ImageInfo>() {
@@ -271,7 +268,7 @@ class FrescoImageLoader : ImageLoader {
   }
 
   override fun showImageView(
-    imageView: MiddlewareView,
+    imageView: View,
     url: String,
     options: (ImageLoaderOptions.() -> Unit)?
   ) {
@@ -287,8 +284,8 @@ class FrescoImageLoader : ImageLoader {
       .setLocalThumbnailPreviewsEnabled(true)
       //渐进式加载
       .setProgressiveRenderingEnabled(options.isProgressiveLoadImage)
-    if (options.imageWidth > 0 && options.imageHeight > 0) {
-      request.resizeOptions = ResizeOptions(options.imageWidth, options.imageHeight)
+    if (options.resizeImageWidth > 0 && options.resizeImageHeight > 0) {
+      request.resizeOptions = ResizeOptions(options.resizeImageWidth, options.resizeImageHeight)
     }
     return request
   }

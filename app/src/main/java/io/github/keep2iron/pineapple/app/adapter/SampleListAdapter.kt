@@ -1,5 +1,6 @@
 package io.github.keep2iron.pineapple.app.adapter
 
+import android.graphics.Color
 import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
@@ -59,11 +60,23 @@ class SampleListAdapter(
           placeHolder = null
           placeHolderRes = 0
           isLoadGif = true
+
+          borderSize = 1f
+          borderOverlayColor = Color.BLACK
+
+          blurRadius = 3
+          iterations = 10
+
+          resizeImageWidth = 500
+          resizeImageHeight = 500
         } else {
           scaleType = ImageLoaderOptions.ScaleType.CENTER_CROP
           placeHolder = null
           placeHolderRes = 0
           isLoadGif = true
+
+          resizeImageWidth = 500
+          resizeImageHeight = 500
         }
       }
 //       val imageRequest =

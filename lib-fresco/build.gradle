@@ -1,5 +1,6 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
+apply plugin: 'com.novoda.bintray-release'
 
 android {
   compileSdkVersion versions.build.target_sdk
@@ -25,9 +26,21 @@ dependencies {
   implementation fileTree(dir: 'libs', include: ['*.jar'])
 
   implementation deps.kotlin.stdlib_jdk7
+  compileOnly deps.fresco
   implementation deps.support.annotations
+  api project(":lib-pineapple")
+  compileOnly deps.fresco_gif
 
   testImplementation 'junit:junit:4.12'
   androidTestImplementation 'androidx.test:runner:1.1.0'
   androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0'
+}
+
+publish {
+  userOrg = 'keep2iron'
+  groupId = 'io.github.keep2iron'
+  artifactId = 'pineapple-fresco'
+  publishVersion = '0.0.4'
+  desc = 'image loader'
+  website = 'https://keep2iron.github.io'
 }

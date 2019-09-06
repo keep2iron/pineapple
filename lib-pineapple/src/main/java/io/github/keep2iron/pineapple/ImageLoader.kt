@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import android.graphics.Bitmap
 import android.net.Uri
+import android.view.View
 import androidx.annotation.DrawableRes
 
 /**
@@ -26,19 +27,19 @@ interface ImageLoader {
    * 显示imageView
    */
   fun showImageView(
-    imageView: MiddlewareView,
+    imageView: View,
     url: String,
     options: (ImageLoaderOptions.() -> Unit)? = null
   )
 
   fun showImageView(
-    imageView: MiddlewareView,
+    imageView: View,
     uri: Uri,
     options: (ImageLoaderOptions.() -> Unit)? = null
   )
 
   fun showImageView(
-    imageView: MiddlewareView,
+    imageView: View,
     @DrawableRes resId: Int,
     options: (ImageLoaderOptions.() -> Unit)? = null
   )

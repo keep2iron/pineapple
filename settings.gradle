@@ -1,1 +1,1 @@
-include ':app', ':lib-pineapple'
+include ':app', ':lib-pineapple', ':lib-glide', ':lib-fresco'

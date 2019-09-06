@@ -81,15 +81,19 @@ class ImageLoaderOptions private constructor(
    */
   var imageHeight: Int = 0,
 
+  var resizeImageWidth: Int = 0,
+
+  var resizeImageHeight: Int = 0,
+
   /**
    * 当图片被设置时触发监听
    */
-  var onFinalImageSetListener: ((width: Int, height: Int) -> Unit)? = null,
+  var onFinalImageSetListener: ((width: Int, height: Int) -> Util)? = null,
 
   /**
    * 当图片加载失败
    */
-  var onImageFailure: (() -> Unit)? = null,
+  var onImageFailure: (() -> Util)? = null,
 
   /**
    * 高斯模糊的迭代次数,次数越高越魔性
@@ -220,6 +224,12 @@ class ImageLoaderOptions private constructor(
     }
     if (otherOptions.animationDuration != this.animationDuration) {
       this.animationDuration = otherOptions.animationDuration
+    }
+    if (otherOptions.resizeImageWidth != this.resizeImageWidth) {
+      this.resizeImageWidth = otherOptions.resizeImageWidth
+    }
+    if (otherOptions.resizeImageHeight != this.resizeImageHeight) {
+      this.resizeImageHeight = otherOptions.resizeImageHeight
     }
   }
 

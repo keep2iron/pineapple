@@ -1,5 +1,6 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
+apply plugin: 'com.novoda.bintray-release'
 
 android {
   compileSdkVersion versions.build.target_sdk
@@ -8,6 +9,9 @@ android {
   defaultConfig {
     minSdkVersion 15
     targetSdkVersion versions.build.target_sdk
+
+    renderscriptTargetApi versions.build.target_sdk
+    renderscriptSupportModeEnabled true
 
     versionCode 1
     versionName "1.0"
@@ -26,8 +30,20 @@ dependencies {
 
   implementation deps.kotlin.stdlib_jdk7
   implementation deps.support.annotations
+  compileOnly 'com.github.bumptech.glide:glide:4.9.0'
+  api project(":lib-pineapple")
+  implementation deps.support.app_compat
 
   testImplementation 'junit:junit:4.12'
   androidTestImplementation 'androidx.test:runner:1.1.0'
   androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0'
+}
+
+publish {
+  userOrg = 'keep2iron'
+  groupId = 'io.github.keep2iron'
+  artifactId = 'pineapple-glide'
+  publishVersion = '0.0.4'
+  desc = 'image loader'
+  website = 'https://keep2iron.github.io'
 }

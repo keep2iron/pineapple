@@ -1,7 +1,6 @@
 package io.github.keep2iron.pineapple
 
 import android.content.Context
-import com.facebook.common.util.ByteConstants
 import java.io.File
 
 class ImageLoaderConfig(
@@ -15,7 +14,7 @@ class ImageLoaderConfig(
   /**
    * 最大缓存大小
    */
-  var maxCacheSize: Long = (200 * ByteConstants.MB).toLong(),
+  var maxCacheSize: Long = (200 * Util.MB),
 
   /**
    * 缓存文件名字
@@ -30,8 +29,7 @@ class ImageLoaderConfig(
   /**
    * option cache 的最大大小
    */
-  var optionCacheSize:Int = 30,
-
+  var optionCacheSize: Int = 30,
 
   /**
    * 是否是调试模式

@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import android.graphics.Bitmap
 import android.net.Uri
+import android.view.View
 
 /**
  *
@@ -14,7 +15,7 @@ import android.net.Uri
  * 相当于ImageLoader的代理
  */
 class ImageLoaderManager private constructor(private val imageLoader: ImageLoader) :
-    ImageLoader {
+  ImageLoader {
 
   override fun getDefaultImageOptions(): ImageLoaderOptions? = imageLoader.getDefaultImageOptions()
 
@@ -29,7 +30,7 @@ class ImageLoaderManager private constructor(private val imageLoader: ImageLoade
   }
 
   override fun showImageView(
-    imageView: MiddlewareView,
+    imageView: View,
     url: String,
     options: (ImageLoaderOptions.() -> Unit)?
   ) {
@@ -37,7 +38,7 @@ class ImageLoaderManager private constructor(private val imageLoader: ImageLoade
   }
 
   override fun showImageView(
-    imageView: MiddlewareView,
+    imageView: View,
     uri: Uri,
     options: (ImageLoaderOptions.() -> Unit)?
   ) {
@@ -45,7 +46,7 @@ class ImageLoaderManager private constructor(private val imageLoader: ImageLoade
   }
 
   override fun showImageView(
-    imageView: MiddlewareView,
+    imageView: View,
     resId: Int,
     options: (ImageLoaderOptions.() -> Unit)?
   ) {
@@ -79,27 +80,23 @@ class ImageLoaderManager private constructor(private val imageLoader: ImageLoade
 
   companion object {
 
-    @JvmStatic
     fun init(
       application: Application,
       config: ImageLoaderConfig? = null,
-      imageLoader: ImageLoader = FRESCO,
       defaultImageLoaderOptions: (ImageLoaderOptions.() -> Unit)? = null
     ) {
       val perConfig = config ?: ImageLoaderConfig(application)
-      INSTANCE = ImageLoaderManager(imageLoader)
-      INSTANCE!!.init(application, perConfig, defaultImageLoaderOptions)
+
+      val imageLoaderClass = Class.forName("io.github.keep2iron.pineapple.ImageLoaderImpl")
+      INSTANCE = ImageLoaderManager(imageLoaderClass.newInstance() as ImageLoader)
+
+      INSTANCE.init(application, perConfig, defaultImageLoaderOptions)
     }
 
-    private var INSTANCE: ImageLoaderManager? = null
+    private lateinit var INSTANCE: ImageLoaderManager
 
     fun getInstance(): ImageLoaderManager {
-      return INSTANCE!!
-    }
-
-    @JvmStatic
-    private val FRESCO: ImageLoader by lazy(mode = LazyThreadSafetyMode.SYNCHRONIZED) {
-      FrescoImageLoader()
+      return INSTANCE
     }
   }
 }
