@@ -11,8 +11,6 @@
       android:id="@+id/imageView"
       android:layout_width="96dp"
       android:layout_height="96dp"
-      android:layout_marginLeft="16dp"
-      android:layout_marginTop="80dp"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent"
       tools:background="@mipmap/ic_launcher"

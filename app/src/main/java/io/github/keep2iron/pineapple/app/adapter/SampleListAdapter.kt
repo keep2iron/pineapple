@@ -5,6 +5,7 @@ import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewGroup.LayoutParams
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import io.github.keep2iron.pineapple.ImageLoaderManager
@@ -57,23 +58,29 @@ class SampleListAdapter(
         if (position == 0) {
           isCircleImage = false
           scaleType = ImageLoaderOptions.ScaleType.FIT_XY
-          placeHolder = null
-          placeHolderRes = 0
           isLoadGif = true
 
-          borderSize = 1f
-          borderOverlayColor = Color.BLACK
+          borderSize = 2f
+          borderOverlayColor = Color.RED
+
+//          radiusBottomLeft = 30f
+//          radiusBottomRight = 30f
+          isSetByImageSize = true
+          imageWidth = activity.resources.displayMetrics.widthPixels
+          imageHeight = LayoutParams.WRAP_CONTENT
 
           blurRadius = 3
-          iterations = 10
+          iterations = 4
 
           resizeImageWidth = 500
           resizeImageHeight = 500
         } else {
           scaleType = ImageLoaderOptions.ScaleType.CENTER_CROP
-          placeHolder = null
-          placeHolderRes = 0
+          isSetByImageSize = true
           isLoadGif = true
+
+          imageWidth = activity.resources.displayMetrics.widthPixels
+          imageHeight = LayoutParams.WRAP_CONTENT
 
           resizeImageWidth = 500
           resizeImageHeight = 500

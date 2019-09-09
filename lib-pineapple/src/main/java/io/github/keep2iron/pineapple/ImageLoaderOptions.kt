@@ -32,7 +32,7 @@ class ImageLoaderOptions private constructor(
   /**
    * 图片边界颜色
    */
-  @ColorInt var borderOverlayColor: Int = 0,
+  @ColorInt var borderOverlayColor: Int = -1,
   /**
    * 边界大小
    */
@@ -48,7 +48,7 @@ class ImageLoaderOptions private constructor(
   var smallImageUri: String? = null,
 
   /**
-   * 同时设置 placeHolderRes 和 placeHolder
+   * 同时设置 placeHolderRes 和 placeHolder 该优先级更高
    *
    * 占位图
    */

@@ -3,24 +3,35 @@ package io.github.keep2iron.pineapple
 import android.app.Application
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.drawable.Drawable
 import android.net.Uri
-import android.util.Log
 import android.util.LruCache
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.annotation.CallSuper
 import androidx.collection.SparseArrayCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.GlideBuilder
+import com.bumptech.glide.Registry
 import com.bumptech.glide.RequestBuilder
+import com.bumptech.glide.RequestManager
+import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.MultiTransformation
 import com.bumptech.glide.load.Transformation
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.load.engine.cache.ExternalPreferredCacheDiskCacheFactory
 import com.bumptech.glide.load.resource.bitmap.BitmapTransitionOptions
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.module.AppGlideModule
+import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.target.Target
 import com.bumptech.glide.request.transition.DrawableCrossFadeFactory
+import com.bumptech.glide.request.transition.Transition
 import io.github.keep2iron.pineapple.ImageLoaderOptions.ScaleType
 import io.github.keep2iron.pineapple.ImageLoaderOptions.ScaleType.CENTER
 import io.github.keep2iron.pineapple.ImageLoaderOptions.ScaleType.CENTER_CROP
@@ -32,12 +43,9 @@ import io.github.keep2iron.pineapple.ImageLoaderOptions.ScaleType.FIT_XY
 import io.github.keep2iron.pineapple.ImageLoaderOptions.ScaleType.FOCUS_CROP
 import io.github.keep2iron.pineapple.ImageLoaderOptions.ScaleType.MATRIX
 import io.github.keep2iron.pineapple.util.CropCircleWithBorderTransformation
-import io.github.keep2iron.pineapple.util.RoundedCornersTransformation
-import io.github.keep2iron.pineapple.util.RoundedCornersTransformation.CornerType.BOTTOM_LEFT
-import io.github.keep2iron.pineapple.util.RoundedCornersTransformation.CornerType.BOTTOM_RIGHT
-import io.github.keep2iron.pineapple.util.RoundedCornersTransformation.CornerType.TOP_LEFT
-import io.github.keep2iron.pineapple.util.RoundedCornersTransformation.CornerType.TOP_RIGHT
+import io.github.keep2iron.pineapple.util.NewRoundedCornersTransformation
 import io.github.keep2iron.pineapple.util.SupportRSBlurTransformation
+import java.io.File
 import java.util.concurrent.Executors
 import kotlin.LazyThreadSafetyMode.NONE
 
@@ -59,10 +67,19 @@ open class GlideInitModule : AppGlideModule() {
   }
 
   override fun isManifestParsingEnabled(): Boolean = false
+
+  override fun registerComponents(context: Context, glide: Glide, registry: Registry) {
+    registry.prepend(File::class.java, BitmapFactory.Options::class.java, BitmapSizeDecoder())
+    registry.register(
+      BitmapFactory.Options::class.java,
+      Size2::class.java,
+      OptionsSizeResourceTranscoder()
+    )
+
+  }
 }
 
 class ImageLoaderImpl : ImageLoader {
-
   private lateinit var application: Application
 
   private lateinit var applicationConfig: ImageLoaderConfig
@@ -72,6 +89,12 @@ class ImageLoaderImpl : ImageLoader {
 
   private val clearTaskExectors by lazy(NONE) {
     Executors.newCachedThreadPool()
+  }
+
+  private val sizeOptions by lazy(NONE) {
+    RequestOptions()
+      .skipMemoryCache(true)
+      .diskCacheStrategy(DiskCacheStrategy.DATA)
   }
 
   /**
@@ -140,13 +163,13 @@ class ImageLoaderImpl : ImageLoader {
   }
 
   private fun showImageInternal(
-    requestBuilder: RequestBuilder<*>,
+    requestBuilder: RequestBuilder<Drawable>,
     imageView: View,
-    imageOptions: ImageLoaderOptions
+    imageOptions: ImageLoaderOptions,
+    url: String
   ) {
 
     requestBuilder.apply {
-
       val iv = imageView as ImageView
       when (imageOptions.scaleType) {
         CENTER -> {
@@ -199,62 +222,50 @@ class ImageLoaderImpl : ImageLoader {
         placeholder(imageOptions.placeHolder)
       }
 
-      //radius
       val transforms = ArrayList<Transformation<Bitmap>>()
-      if (imageOptions.radius > 0 ||
-        imageOptions.radiusTopLeft > 0 ||
-        imageOptions.radiusTopRight > 0 ||
-        imageOptions.radiusBottomLeft > 0 ||
-        imageOptions.radiusBottomRight > 0
-      ) {
-        if (imageOptions.radiusTopLeft == 0f) {
-          imageOptions.radiusTopLeft = imageOptions.radius
-          transforms.add(
-            RoundedCornersTransformation(
-              imageOptions.radiusTopLeft.toInt(),
-              0,
-              TOP_LEFT
-            )
-          )
-        }
-        if (imageOptions.radiusTopRight == 0f) {
-          imageOptions.radiusTopRight = imageOptions.radius
-          transforms.add(
-            RoundedCornersTransformation(
-              imageOptions.radiusTopRight.toInt(),
-              0,
-              TOP_RIGHT
-            )
-          )
-        }
-        if (imageOptions.radiusBottomLeft == 0f) {
-          imageOptions.radiusBottomLeft = imageOptions.radius
-          transforms.add(
-            RoundedCornersTransformation(
-              imageOptions.radiusBottomLeft.toInt(),
-              0,
-              BOTTOM_LEFT
-            )
-          )
-        }
-        if (imageOptions.radiusBottomRight == 0f) {
-          imageOptions.radiusBottomRight = imageOptions.radius
-          transforms.add(
-            RoundedCornersTransformation(
-              imageOptions.radiusBottomLeft.toInt(),
-              0,
-              BOTTOM_RIGHT
-            )
-          )
-        }
-      }
-
       //blur
       if (imageOptions.iterations > 0 && imageOptions.blurRadius > 0) {
         transforms.add(
           SupportRSBlurTransformation(
             imageOptions.blurRadius,
             imageOptions.iterations
+          )
+        )
+      }
+
+      //radius
+      if ((imageOptions.radius > 0 ||
+            imageOptions.radiusTopLeft > 0 ||
+            imageOptions.radiusTopRight > 0 ||
+            imageOptions.radiusBottomLeft > 0 ||
+            imageOptions.radiusBottomRight > 0 ||
+            imageOptions.borderSize > 0 ||
+            imageOptions.borderOverlayColor > 0) && !imageOptions.isCircleImage
+      ) {
+        if (imageOptions.radiusTopLeft == 0f) {
+          imageOptions.radiusTopLeft = imageOptions.radius
+        }
+
+        if (imageOptions.radiusTopRight == 0f) {
+          imageOptions.radiusTopRight = imageOptions.radius
+        }
+
+        if (imageOptions.radiusBottomLeft == 0f) {
+          imageOptions.radiusBottomLeft = imageOptions.radius
+        }
+
+        if (imageOptions.radiusBottomRight == 0f) {
+          imageOptions.radiusBottomRight = imageOptions.radius
+        }
+
+        transforms.add(
+          NewRoundedCornersTransformation(
+            imageOptions.radiusTopLeft,
+            imageOptions.radiusTopRight,
+            imageOptions.radiusBottomRight,
+            imageOptions.radiusBottomLeft,
+            imageOptions.borderOverlayColor,
+            imageOptions.borderSize
           )
         )
       }
@@ -269,11 +280,52 @@ class ImageLoaderImpl : ImageLoader {
         )
       }
 
+
       if (transforms.isNotEmpty()) {
         this.apply(RequestOptions.bitmapTransform(MultiTransformation(transforms)))
       }
 
-      into(imageView as MiddlewareView)
+      if (imageOptions.isSetByImageSize || imageOptions.onFinalImageSetListener != null || imageOptions.onImageFailure != null) {
+        Glide.with(imageView.context)
+          .`as`(Size2::class.java)
+          .apply(sizeOptions)
+          .load(url)
+          .into(object : CustomTarget<Size2>() {
+            override fun onLoadCleared(placeholder: Drawable?) {
+              imageOptions.onImageFailure?.invoke()
+            }
+
+            override fun onResourceReady(resource: Size2, transition: Transition<in Size2>?) {
+              val imageWidth = resource.width
+              val imageHeight = resource.height
+
+              val layoutParams = imageView.layoutParams
+              val viewWidth = layoutParams.width
+              val viewHeight = layoutParams.height
+
+              if (viewWidth == imageOptions.imageWidth && viewHeight == imageOptions.imageHeight) {
+                imageView.layoutParams = layoutParams
+                imageOptions.onFinalImageSetListener?.invoke(imageWidth, imageHeight)
+                return
+              }
+
+              if (imageOptions.isSetByImageSize && imageOptions.imageWidth > 0) {
+                val layoutParams = imageView.layoutParams
+                layoutParams.width = imageOptions.imageWidth
+                if (imageOptions.imageHeight == ViewGroup.LayoutParams.WRAP_CONTENT) {
+                  layoutParams.height =
+                    (imageOptions.imageWidth.toFloat() / imageWidth * imageHeight).toInt()
+                } else {
+                  layoutParams.height = imageOptions.imageHeight
+                }
+                imageView.layoutParams = layoutParams
+              }
+              imageOptions.onFinalImageSetListener?.invoke(imageWidth, imageHeight)
+            }
+          })
+      }
+
+      into(imageView)
     }
   }
 
@@ -285,12 +337,39 @@ class ImageLoaderImpl : ImageLoader {
     val imageOptions = getImageOptions(Uri.parse(url), options)
 
     showImageInternal(
-      Glide.with(imageView.context)
-        .asBitmap()
+      setGlideInternal(imageView, imageOptions)
         .load(url)
-        .transition(BitmapTransitionOptions.withCrossFade(getDrawableCrossFadeFactory(imageOptions.animationDuration)))
-      , imageView, imageOptions
+      , imageView, imageOptions, url
     )
+  }
+
+  private fun setGlideInternal(
+    imageView: View,
+    imageOptions: ImageLoaderOptions
+  ): RequestManager {
+
+    return Glide.with(imageView.context)
+      .apply {
+        if (imageOptions.isLoadGif) {
+          asGif()
+            .transition(
+              DrawableTransitionOptions.withCrossFade(
+                getDrawableCrossFadeFactory(
+                  imageOptions.animationDuration
+                )
+              )
+            )
+        } else {
+          asBitmap()
+            .transition(
+              BitmapTransitionOptions.withCrossFade(
+                getDrawableCrossFadeFactory(
+                  imageOptions.animationDuration
+                )
+              )
+            )
+        }
+      }
   }
 
   override fun showImageView(
@@ -301,11 +380,9 @@ class ImageLoaderImpl : ImageLoader {
     val imageOptions = getImageOptions(uri, options)
 
     showImageInternal(
-      Glide.with(imageView.context)
-        .asBitmap()
+      setGlideInternal(imageView, imageOptions)
         .load(uri)
-        .transition(BitmapTransitionOptions.withCrossFade(getDrawableCrossFadeFactory(imageOptions.animationDuration)))
-      , imageView, imageOptions
+      , imageView, imageOptions, uri.toString()
     )
   }
 
@@ -314,14 +391,13 @@ class ImageLoaderImpl : ImageLoader {
     resId: Int,
     options: (ImageLoaderOptions.() -> Unit)?
   ) {
-    val imageOptions = getImageOptions(Uri.parse("res://$resId"), options)
+    val resUri = Uri.parse("res://$resId")
+    val imageOptions = getImageOptions(resUri, options)
 
     showImageInternal(
-      Glide.with(imageView.context)
-        .asDrawable()
-        .load(resId)
-        .transition(DrawableTransitionOptions.withCrossFade(getDrawableCrossFadeFactory(imageOptions.animationDuration)))
-      , imageView, imageOptions
+      setGlideInternal(imageView, imageOptions)
+        .load(resUri)
+      , imageView, imageOptions, resUri.toString()
     )
   }
 
@@ -331,6 +407,32 @@ class ImageLoaderImpl : ImageLoader {
     onGetBitmap: (Bitmap?) -> Unit,
     options: (ImageLoaderOptions.() -> Unit)?
   ) {
+    Glide.with(context)
+      .asBitmap()
+      .load(url)
+      .listener(object : RequestListener<Bitmap> {
+        override fun onLoadFailed(
+          e: GlideException?,
+          model: Any?,
+          target: Target<Bitmap>?,
+          isFirstResource: Boolean
+        ): Boolean {
+          onGetBitmap(null)
+          return false
+        }
+
+        override fun onResourceReady(
+          resource: Bitmap?,
+          model: Any?,
+          target: Target<Bitmap>?,
+          dataSource: DataSource?,
+          isFirstResource: Boolean
+        ): Boolean {
+          onGetBitmap(resource)
+          return false
+        }
+      }
+      ).submit()
   }
 
   override fun cleanMemory(context: Context) {
