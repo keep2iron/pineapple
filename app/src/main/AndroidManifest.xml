@@ -23,11 +23,6 @@
       </intent-filter>
     </activity>
     <activity android:name=".ShareElementActivity"/>
-    <activity android:name=".PaintViewActivity">
-      <intent-filter>
-        <action android:name="act"/>
-      </intent-filter>
-    </activity>
   </application>
 
 </manifest>
