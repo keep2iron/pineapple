@@ -43,7 +43,7 @@ publish {
   userOrg = 'keep2iron'
   groupId = 'io.github.keep2iron'
   artifactId = 'pineapple-glide'
-  publishVersion = '0.0.4'
+  publishVersion = '0.0.1'
   desc = 'image loader'
   website = 'https://keep2iron.github.io'
 }

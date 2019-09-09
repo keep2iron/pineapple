@@ -2,42 +2,40 @@
 
 # Pineapple
 
-[中文](README.zh-cn.md)
-
 Glide version :![Release](https://api.bintray.com/packages/keep2iron/maven/pineapple-glide/images/download.svg) 
 
 Fresco version: ![Release](https://api.bintray.com/packages/keep2iron/maven/pineapple-fresco/images/download.svg)
 
 Build Status: ![BuildStatus](https://travis-ci.org/keep2iron/pineapple.svg?branch=master)
 
-`Pineapple` is an imageLoader manger library.
+`Pineapple`是一个用于加载图片的管理框架
 
-- Base on kotlin.
-- Glide and Fresco implements same interfaces.
-- Switch Fresco or Glide is easy,just switch gradle dependencies,android change some code.
-- Base on androidx
+- 基于kotlin
+- Glide和Fresco基于同一个接口进行实现
+- 一键切换Glide与Fresco加载
+- 基于androidx
 
-# Downloads
+# 下载
 
-Glide version and fresco version can be installed one, both installations will have an error switch
+Glide版本与fresco版本安装一种即可，两者同时安装会有报错
 
-#### Glide
+#### Glide 安装
 
 ```groovy
 dependencies {
     //glide version
     implementation 'io.github.keep2iron:pineapple-glide:$latest_version'
     
-    //Since pineapple does not integrate glide versions internally, it needs to integrate itself.
+    //由于pineapple内部不集成glide版本因此需要自己集成
     implementation 'com.github.bumptech.glide:glide:$glide_latest_version'
-    //kotlin should use kapt
+    //kotlin需要换成kapt
     annotationProcessor 'com.github.bumptech.glide:compiler:$glide_latest_version'
 }
 ```
 
-> One thing to note is that due to the features of Glide v4, you need to use **GlideAppModule** to set some global features or properties, so I implemented a class myself **io.github.keep2iron.pineapple.GlideInitModule**
+> 需要注意的一点是由于Glide v4的特性，需要使用**GlideAppModule**来进行设置一些全局的特性或者属性，因此笔者这里自己实现了一个类 **io.github.keep2iron.pineapple.GlideInitModule**
 >
-> If you use the properties such as setting the cache, you must inherit the class when you get the width and height of the image. Remember to call the parent class method when overriding the method.
+> 如果用到了设置缓存之类的属性 还有获取图片宽高时必须继承该类，复写方法时请切记调用父类方法
 
 ```kotlin
 @GlideModule
@@ -46,23 +44,23 @@ class GlideModule : GlideInitModule()
 
 
 
-#### Fresco
+#### Fresco安装
 
 ````groovy
 dependencies {
     //fresco version
     implementation 'io.github.keep2iron:pineapple-fresco:$latest_version'
    
-    //Since pineapple does not integrate fresco versions internally, it needs to integrate itself.
+    //由于pineapple内部不集成glide版本因此需要自己集成
     implementation 'com.facebook.fresco:fresco:2.0.0'
 }
 ````
 
 
 
-#### Use
+#### 简单使用
 
-Initialize the ImageLoaderManager as early as possible, the internal will automatically load fresco or glide, no external parameters are required.
+初始化ImageLoaderManager尽可能的早，内部会自动加载fresco或glide，不需要外部进行传递参数
 ```kotlin
 ImageLoaderManager.init(
     application,
@@ -72,7 +70,7 @@ ImageLoaderManager.init(
         maxCacheSize = (400 * ByteConstants.MB).toLong()
     ),
     defaultImageLoaderOptions = {
-        isCircleImage = false 
+        isCircleImage = false
         scaleType = ImageLoaderOptions.ScaleType.FIT_CENTER
         placeHolderRes = R.mipmap.ic_launcher
         placeHolder = ResourcesCompat.getDrawable(resources, R.mipmap.ic_launcher, null)
@@ -80,7 +78,7 @@ ImageLoaderManager.init(
 )
 ```
 
-If you are using a loaded image scene, use MiddlewareView to replace **IimageView** in xml, because this class has different implementations in the two versions of the library.
+如果有使用加载图片场景，使用MiddlewareView在xml中替**IimageView**，因为这个类在两个版本的库中是有不同的实现的
 ```xml
 <io.github.keep2iron.pineapple.MiddlewareView
 	android:id="@+id/middleImageView"
@@ -88,12 +86,12 @@ If you are using a loaded image scene, use MiddlewareView to replace **IimageVie
 	android:layout_height="match_parent" /> 
 ```
 
-Load Image by default options
+加载图片
 ```kotlin
 ImageLoaderManager.getInstance().showImageView(middleImageView, url)
 ```
 
-Loading the image through option, be careful, internally I will merge the defaultImageLoaderOptions object passed in the previous init method with the currently loaded options. The defaultImageLoaderOptions property will be passed to the new options object, and the properties of both will take precedence. The level will be higher in the current options.
+通过option加载图片，要小心的是在内部我会让前面init方法中传入的defaultImageLoaderOptions对象和当前加载的options进行合并，defaultImageLoaderOptions的属性会传入到新的options对象中，两者的属性的优先级在当前options中的会更高。
 ```kotlin
 ImageLoaderManager.getInstance().showImageView(
     holder.binding.imageView, data[position]
@@ -105,7 +103,7 @@ ImageLoaderManager.getInstance().showImageView(
 }
 ```
 
-In the init method above we passed the isCircleImage to load the prototype image, but the current options have higher priority, so the final isCircleImage = true
+上面在init方法中我们传入了isCircleImage来加载原型图片，但是当前的options优先级更高，因此最终isCircleImage = true
 
 ## ProGuard
 
