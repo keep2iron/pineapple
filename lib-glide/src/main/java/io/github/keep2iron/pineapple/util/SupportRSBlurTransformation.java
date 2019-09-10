@@ -25,7 +25,6 @@ import androidx.annotation.NonNull;
 import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
 import io.github.keep2iron.pineapple.internal.FastBlur;
 import io.github.keep2iron.pineapple.internal.RSBlur;
-import io.github.keep2iron.pineapple.internal.SupportRSBlur;
 import java.security.MessageDigest;
 
 public class SupportRSBlurTransformation extends BitmapTransformation {
@@ -74,7 +73,7 @@ public class SupportRSBlurTransformation extends BitmapTransformation {
 
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
       try {
-        bitmap = SupportRSBlur.blur(context, bitmap, radius);
+        bitmap = RSBlur.blur(context, bitmap, radius);
       } catch (NoClassDefFoundError e) {
         bitmap = RSBlur.blur(context, bitmap, radius);
       } catch (RuntimeException e) {

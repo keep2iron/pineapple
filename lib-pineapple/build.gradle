@@ -1,5 +1,6 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
+apply plugin: 'com.novoda.bintray-release'
 
 android {
   compileSdkVersion versions.build.target_sdk
@@ -30,4 +31,13 @@ dependencies {
   testImplementation 'junit:junit:4.12'
   androidTestImplementation 'androidx.test:runner:1.1.0'
   androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0'
+}
+
+publish {
+  userOrg = 'keep2iron'
+  groupId = 'io.github.keep2iron'
+  artifactId = 'pineapple-core'
+  publishVersion = '0.0.1'
+  desc = 'image loader'
+  website = 'https://keep2iron.github.io'
 }

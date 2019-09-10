@@ -10,8 +10,8 @@ android {
     minSdkVersion 15
     targetSdkVersion versions.build.target_sdk
 
-    renderscriptTargetApi versions.build.target_sdk
-    renderscriptSupportModeEnabled true
+//    renderscriptTargetApi versions.build.target_sdk
+//    renderscriptSupportModeEnabled true
 
     versionCode 1
     versionName "1.0"
