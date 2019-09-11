@@ -40,7 +40,7 @@ publish {
   userOrg = 'keep2iron'
   groupId = 'io.github.keep2iron'
   artifactId = 'pineapple-fresco'
-  publishVersion = '0.0.1'
+  publishVersion = '0.0.1-fix2'
   desc = 'image loader'
   website = 'https://keep2iron.github.io'
 }

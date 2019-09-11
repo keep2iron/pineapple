@@ -1,5 +1,6 @@
 package io.github.keep2iron.pineapple
 
+import android.graphics.Color
 import android.graphics.Matrix
 import android.graphics.drawable.Drawable
 import androidx.annotation.ColorInt
@@ -32,7 +33,7 @@ class ImageLoaderOptions private constructor(
   /**
    * 图片边界颜色
    */
-  @ColorInt var borderOverlayColor: Int = -1,
+  @ColorInt var borderOverlayColor: Int = Color.GRAY,
   /**
    * 边界大小
    */

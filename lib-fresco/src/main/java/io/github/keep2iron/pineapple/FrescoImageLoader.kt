@@ -338,7 +338,7 @@ class ImageLoaderImpl : ImageLoader {
     ) {
       loadRadiusImage(draweeView, options)
     }
-    if (options.borderOverlayColor != -1) {
+    if (options.borderSize > 0) {
       setBorder(draweeView, options.borderOverlayColor, options.borderSize)
     }
     if (options.scaleType != ImageLoaderOptions.ScaleType.NONE) {
@@ -409,10 +409,9 @@ class ImageLoaderImpl : ImageLoader {
     color: Int,
     borderSize: Float
   ) {
-    val roundingParams = draweeView.hierarchy.roundingParams
-      ?: throw IllegalArgumentException("draweeView.hierarchy.roundingParams == null,you must set radius or set a circle image")
-    require(borderSize > 0) { "do you forget set a borderSize?" }
-    roundingParams.setBorder(color, borderSize)
+    val roundingParams = draweeView.hierarchy.roundingParams ?: RoundingParams.fromCornersRadius(0f)
+    roundingParams?.setBorder(color, borderSize)
+    draweeView.hierarchy.roundingParams = roundingParams
   }
 
   override fun cleanMemory(context: Context) {
