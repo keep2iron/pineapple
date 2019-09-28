@@ -4,3 +4,4 @@
   **[] $VALUES;
   public *;
 }
+-keepnames class io.github.keep2iron.pineapple.ImageLoaderImpl
