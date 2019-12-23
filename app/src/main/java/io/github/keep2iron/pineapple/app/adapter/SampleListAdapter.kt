@@ -79,6 +79,8 @@ class SampleListAdapter(
           isSetByImageSize = true
           isLoadGif = true
 
+          radius = 20f
+
           imageWidth = activity.resources.displayMetrics.widthPixels
           imageHeight = LayoutParams.WRAP_CONTENT
 

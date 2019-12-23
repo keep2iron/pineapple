@@ -30,7 +30,7 @@ dependencies {
 
   implementation deps.kotlin.stdlib_jdk7
   implementation deps.support.annotations
-  compileOnly 'com.github.bumptech.glide:glide:4.9.0'
+  compileOnly 'com.github.bumptech.glide:glide:4.10.0'
   api project(":lib-pineapple")
   implementation deps.support.app_compat
 
@@ -43,7 +43,7 @@ publish {
   userOrg = 'keep2iron'
   groupId = 'io.github.keep2iron'
   artifactId = 'pineapple-glide'
-  publishVersion = '0.0.1'
+  publishVersion = '0.0.2-fix1'
   desc = 'image loader'
   website = 'https://keep2iron.github.io'
 }

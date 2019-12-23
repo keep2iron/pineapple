@@ -6,6 +6,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.Drawable
 import android.net.Uri
+import android.util.Log
 import android.util.LruCache
 import android.view.View
 import android.view.ViewGroup
@@ -24,6 +25,9 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.load.engine.cache.ExternalPreferredCacheDiskCacheFactory
 import com.bumptech.glide.load.resource.bitmap.BitmapTransitionOptions
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
+import com.bumptech.glide.load.resource.bitmap.CenterInside
+import com.bumptech.glide.load.resource.bitmap.FitCenter
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.module.AppGlideModule
 import com.bumptech.glide.request.RequestListener
@@ -170,42 +174,30 @@ class ImageLoaderImpl : ImageLoader {
   ) {
 
     requestBuilder.apply {
-      val iv = imageView as ImageView
+      val transforms = ArrayList<Transformation<Bitmap>>()
       when (imageOptions.scaleType) {
-        CENTER -> {
-          iv.scaleType = ImageView.ScaleType.CENTER
-        }
         CENTER_CROP -> {
-          iv.scaleType = ImageView.ScaleType.CENTER_CROP
-          centerCrop()
+            transforms.add(CenterCrop())
         }
-        FOCUS_CROP -> {
+        FOCUS_CROP,
+        CENTER ,
+        FIT_START,
+        FIT_END,
+        FIT_XY,
+        MATRIX-> {
           //only support in fresco
+            if(applicationConfig.debug){
+                Log.d("pineapplie","not support this transform")
+            }
         }
         CENTER_INSIDE -> {
-          iv.scaleType = ImageView.ScaleType.CENTER_INSIDE
-          centerInside()
-        }
-        FIT_START -> {
-          iv.scaleType = ImageView.ScaleType.FIT_START
-        }
-        FIT_END -> {
-          iv.scaleType = ImageView.ScaleType.FIT_END
-        }
-        FIT_XY -> {
-          iv.scaleType = ImageView.ScaleType.FIT_XY
-        }
-        MATRIX -> {
-          //only support in fresco
-          iv.scaleType = ImageView.ScaleType.MATRIX
-          iv.imageMatrix = imageOptions.matrix
+            transforms.add(CenterInside())
         }
         ScaleType.NONE -> {
-          //only support in fresco
+            apply(RequestOptions.noTransformation())
         }
         FIT_CENTER -> {
-          iv.scaleType = ImageView.ScaleType.FIT_CENTER
-          fitCenter()
+            transforms.add(FitCenter())
         }
       }
 
@@ -222,7 +214,6 @@ class ImageLoaderImpl : ImageLoader {
         placeholder(imageOptions.placeHolder)
       }
 
-      val transforms = ArrayList<Transformation<Bitmap>>()
       //blur
       if (imageOptions.iterations > 0 && imageOptions.blurRadius > 0) {
         transforms.add(
@@ -280,7 +271,6 @@ class ImageLoaderImpl : ImageLoader {
         )
       }
 
-
       if (transforms.isNotEmpty()) {
         this.apply(RequestOptions.bitmapTransform(MultiTransformation(transforms)))
       }
@@ -325,7 +315,7 @@ class ImageLoaderImpl : ImageLoader {
           })
       }
 
-      into(imageView)
+      into(imageView as ImageView)
     }
   }
 
