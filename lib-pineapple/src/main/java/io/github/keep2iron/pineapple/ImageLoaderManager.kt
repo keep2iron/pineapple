@@ -95,7 +95,7 @@ class ImageLoaderManager private constructor(private val imageLoader: ImageLoade
 
     private lateinit var INSTANCE: ImageLoaderManager
 
-    fun getInstance(): ImageLoaderManager {
+    fun getInstance(): ImageLoader {
       return INSTANCE
     }
   }
