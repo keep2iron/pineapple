@@ -344,11 +344,11 @@ class ImageLoaderImpl : ImageLoader {
     if (options.scaleType != ImageLoaderOptions.ScaleType.NONE) {
       setMode(draweeView, options)
     }
-    if (options.placeHolderRes != 0) {
-      hierarchy.setPlaceholderImage(options.placeHolderRes)
-    }
     if (options.placeHolder != null) {
       hierarchy.setPlaceholderImage(options.placeHolder)
+    }
+    if(options.errorHolder != null){
+      hierarchy.setFailureImage(options.errorHolder)
     }
   }
 

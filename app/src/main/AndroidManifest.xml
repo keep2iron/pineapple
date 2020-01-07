@@ -23,6 +23,7 @@
       </intent-filter>
     </activity>
     <activity android:name=".ShareElementActivity"/>
+      <activity android:name=".PlaceHolderActivity" />
   </application>
 
 </manifest>

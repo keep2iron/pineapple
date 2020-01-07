@@ -14,89 +14,95 @@ import io.github.keep2iron.pineapple.MiddlewareView
 import io.github.keep2iron.pineapple.app.R
 
 
-class MyViewHolder(itemView: View):RecyclerView.ViewHolder(itemView){
+class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
 }
 
 class SampleListAdapter(
-  val activity: AppCompatActivity,
-  private val data: List<String>
+    val activity: AppCompatActivity,
+    private val data: List<String>
 ) :
-  RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-  override fun onCreateViewHolder(
-    parent: ViewGroup,
-    viewType: Int
-  ): RecyclerView.ViewHolder {
+    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int
+    ): RecyclerView.ViewHolder {
 //    val binding = DataBindingUtil.inflate<ItemSampleListBinding>(
 //      LayoutInflater.from(parent.context.applicationContext),
 //      R.layout.item_sample_list,
 //      parent,
 //      false
 //    )
-    return MyViewHolder(
-      LayoutInflater.from(parent.context).inflate(
-        R.layout.item_sample_list,
-        parent,
-        false
-      )
-    )
-  }
+        return MyViewHolder(
+            LayoutInflater.from(parent.context).inflate(
+                R.layout.item_sample_list,
+                parent,
+                false
+            )
+        )
+    }
 
-  override fun getItemCount(): Int = data.size
+    override fun getItemCount(): Int = data.size
 
-  override fun onBindViewHolder(
-    holder: RecyclerView.ViewHolder,
-    position: Int
-  ) {
-    val imageView = holder.itemView.findViewById<MiddlewareView>(R.id.imageView)
-    // 通过 ImageLoadManager.INSTANCE 直接加载
-    ImageLoaderManager.getInstance()
-      .showImageView(
-        imageView,
-        data[position]
-      ) {
-        if (position == 0) {
-          isCircleImage = false
-          scaleType = ImageLoaderOptions.ScaleType.FIT_XY
-          isLoadGif = true
+    override fun onBindViewHolder(
+        holder: RecyclerView.ViewHolder,
+        position: Int
+    ) {
+        val imageView = holder.itemView.findViewById<MiddlewareView>(R.id.imageView)
+        // 通过 ImageLoadManager.INSTANCE 直接加载
+        ImageLoaderManager.getInstance()
+            .showImageView(
+                imageView,
+                data[position]
+            ) {
+                if (position == 0) {
+                    isCircleImage = true
+                    scaleType = ImageLoaderOptions.ScaleType.FIT_XY
+                    isLoadGif = true
 
-          borderSize = 2f
-          borderOverlayColor = Color.RED
+                    borderSize = 2f
+                    borderOverlayColor = Color.RED
 
 //          radiusBottomLeft = 30f
 //          radiusBottomRight = 30f
-          isSetByImageSize = true
-          imageWidth = activity.resources.displayMetrics.widthPixels
-          imageHeight = LayoutParams.WRAP_CONTENT
+                    isSetByImageSize = true
+                    imageWidth = activity.resources.displayMetrics.widthPixels
+                    imageHeight = LayoutParams.WRAP_CONTENT
 
-          blurRadius = 3
-          iterations = 4
+                    blurRadius = 3
+                    iterations = 4
 
-          resizeImageWidth = 500
-          resizeImageHeight = 500
-        } else {
-          scaleType = ImageLoaderOptions.ScaleType.CENTER_CROP
-          isSetByImageSize = true
-          isLoadGif = true
+                    resizeImageWidth = 500
+                    resizeImageHeight = 500
+                } else {
+                    scaleType = ImageLoaderOptions.ScaleType.CENTER_CROP
+                    isSetByImageSize = true
+                    isLoadGif = true
 
-          radius = 20f
+//          radius = 20f
+                    radiusTopLeft = 20f
+                    radiusTopRight = 20f
 
-          imageWidth = activity.resources.displayMetrics.widthPixels
-          imageHeight = LayoutParams.WRAP_CONTENT
+                    imageWidth = activity.resources.displayMetrics.widthPixels
+                    imageHeight = LayoutParams.WRAP_CONTENT
 
-          resizeImageWidth = 500
-          resizeImageHeight = 500
-        }
-      }
+                    resizeImageWidth = 500
+                    resizeImageHeight = 500
+
+                    setErrorHolderRes(activity, R.color.colorAccent)
+
+                    lifecycleOwner = activity
+                }
+            }
 //       val imageRequest =
 //          ImageRequestBuilder.newBuilderWithSource(Uri.parse(data[position]))
 //              .build()
 //      holder.binding.imageView.setImageRequest(imageRequest)
 //    holder.binding.executePendingBindings()
 
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-      holder.itemView.transitionName = "imageView"
-    }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            holder.itemView.transitionName = "imageView"
+        }
 //    holder.itemView.setOnClickListener {
 //      val context = holder.itemView.context
 //      val intent = Intent(context, ShareElementActivity::class.java)
@@ -108,5 +114,5 @@ class SampleListAdapter(
 //      intent.putExtra("url", data[position])
 //      activity.startActivity(intent, options.toBundle())
 //    }
-  }
+    }
 }

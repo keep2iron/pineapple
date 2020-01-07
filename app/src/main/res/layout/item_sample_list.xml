@@ -9,8 +9,8 @@
 
   <io.github.keep2iron.pineapple.MiddlewareView
       android:id="@+id/imageView"
-      android:layout_width="96dp"
-      android:layout_height="96dp"
+      android:layout_width="match_parent"
+      android:layout_height="300dp"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent"
       tools:background="@mipmap/ic_launcher"

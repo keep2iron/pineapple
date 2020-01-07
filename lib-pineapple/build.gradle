@@ -27,6 +27,7 @@ dependencies {
 
   implementation deps.kotlin.stdlib_jdk7
   implementation deps.support.annotations
+  implementation deps.arch.lifecycle_only
 
   testImplementation 'junit:junit:4.12'
   androidTestImplementation 'androidx.test:runner:1.1.0'
