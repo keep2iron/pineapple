@@ -4,6 +4,16 @@ buildscript {
   apply from: './gradle-version/version.gradle'
   addRepos(repositories)
 
+  ext {
+    version_group = 'io.github.keep2iron'
+
+    version_fresco = '0.0.2-alpha01'
+
+    version_pineapple = '0.0.2-alpha01'
+
+    version_glide = '0.0.2-alpha01'
+  }
+
   dependencies {
     classpath deps.android_gradle_plugin
     classpath deps.kotlin_gradle_plugin

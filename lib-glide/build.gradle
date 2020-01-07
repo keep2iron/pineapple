@@ -41,9 +41,9 @@ dependencies {
 
 publish {
   userOrg = 'keep2iron'
-  groupId = 'io.github.keep2iron'
+  groupId = rootProject.ext.version_group
   artifactId = 'pineapple-glide'
-  publishVersion = '0.0.2-fix1'
+  publishVersion = rootProject.ext.version_glide
   desc = 'image loader'
   website = 'https://keep2iron.github.io'
 }

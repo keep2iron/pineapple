@@ -36,9 +36,9 @@ dependencies {
 
 publish {
   userOrg = 'keep2iron'
-  groupId = 'io.github.keep2iron'
+  groupId = rootProject.ext.version_group
   artifactId = 'pineapple-core'
-  publishVersion = '0.0.1'
+  publishVersion = rootProject.ext.version_pineapple
   desc = 'image loader'
   website = 'https://keep2iron.github.io'
 }
