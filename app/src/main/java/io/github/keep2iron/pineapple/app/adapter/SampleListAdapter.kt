@@ -80,8 +80,8 @@ class SampleListAdapter(
                     isLoadGif = true
 
 //          radius = 20f
-                    radiusTopLeft = 20f
-                    radiusTopRight = 20f
+                    radiusTopLeft = imageView.context.resources.displayMetrics.density * 6
+                    radiusTopRight = imageView.context.resources.displayMetrics.density * 6
 
                     imageWidth = activity.resources.displayMetrics.widthPixels
                     imageHeight = LayoutParams.WRAP_CONTENT

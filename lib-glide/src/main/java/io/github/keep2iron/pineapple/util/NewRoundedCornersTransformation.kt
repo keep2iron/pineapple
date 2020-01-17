@@ -57,10 +57,10 @@ class NewRoundedCornersTransformation(
   private fun drawRoundRect(canvas: Canvas, bitmapPaint: Paint, width: Float, height: Float) {
     val path = composeRoundedRectPath(
       RectF(0f, 0f, width, height),
-      topLeftRadius * 2,
-      topRightRadius * 2,
-      bottomRightRadius * 2,
-      bottomLeftRadius * 2
+      topLeftRadius ,
+      topRightRadius,
+      bottomRightRadius ,
+      bottomLeftRadius
     )
     canvas.drawPath(
       path, bitmapPaint
@@ -79,25 +79,25 @@ class NewRoundedCornersTransformation(
     bottomRightDiameter: Float,
     bottomLeftDiameter: Float
   ): Path {
-    var topLeftDiameter = topLeftDiameter
-    var topRightDiameter = topRightDiameter
-    var bottomRightDiameter = bottomRightDiameter
-    var bottomLeftDiameter = bottomLeftDiameter
+    var varTopLeftDiameter = topLeftDiameter
+    var varTopRightDiameter = topRightDiameter
+    var varBottomRightDiameter = bottomRightDiameter
+    var varBottomLeftDiameter = bottomLeftDiameter
     val path = Path()
-    topLeftDiameter = if (topLeftDiameter < 0) 0f else topLeftDiameter
-    topRightDiameter = if (topRightDiameter < 0) 0f else topRightDiameter
-    bottomLeftDiameter = if (bottomLeftDiameter < 0) 0f else bottomLeftDiameter
-    bottomRightDiameter = if (bottomRightDiameter < 0) 0f else bottomRightDiameter
+    varTopLeftDiameter = if (varTopLeftDiameter < 0) 0f else varTopLeftDiameter
+    varTopRightDiameter = if (varTopRightDiameter < 0) 0f else varTopRightDiameter
+    varBottomLeftDiameter = if (varBottomLeftDiameter < 0) 0f else varBottomLeftDiameter
+    varBottomRightDiameter = if (varBottomRightDiameter < 0) 0f else varBottomRightDiameter
 
-    path.moveTo(rect.left + topLeftDiameter, rect.top)
-    path.lineTo(rect.right - topRightDiameter, rect.top)
-    path.quadTo(rect.right, rect.top, rect.right, rect.top + topRightDiameter)
-    path.lineTo(rect.right, rect.bottom - bottomRightDiameter)
-    path.quadTo(rect.right, rect.bottom, rect.right - bottomRightDiameter, rect.bottom)
-    path.lineTo(rect.left + bottomLeftDiameter, rect.bottom)
-    path.quadTo(rect.left, rect.bottom, rect.left, rect.bottom - bottomLeftDiameter)
-    path.lineTo(rect.left, rect.top + topLeftDiameter)
-    path.quadTo(rect.left, rect.top, rect.left + topLeftDiameter, rect.top)
+    path.moveTo(rect.left + varTopLeftDiameter, rect.top)
+    path.lineTo(rect.right - varTopRightDiameter, rect.top)
+    path.quadTo(rect.right, rect.top, rect.right, rect.top + varTopRightDiameter)
+    path.lineTo(rect.right, rect.bottom - varBottomRightDiameter)
+    path.quadTo(rect.right, rect.bottom, rect.right - varBottomRightDiameter, rect.bottom)
+    path.lineTo(rect.left + varBottomLeftDiameter, rect.bottom)
+    path.quadTo(rect.left, rect.bottom, rect.left, rect.bottom - varBottomLeftDiameter)
+    path.lineTo(rect.left, rect.top + varTopLeftDiameter)
+    path.quadTo(rect.left, rect.top, rect.left + varTopLeftDiameter, rect.top)
     path.close()
 
     return path
