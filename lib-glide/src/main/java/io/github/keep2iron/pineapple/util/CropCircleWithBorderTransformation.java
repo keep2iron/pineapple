@@ -34,9 +34,15 @@ public class CropCircleWithBorderTransformation extends BitmapTransformation {
     setCanvasBitmapDensity(toTransform, bitmap);
 
     Paint paint = new Paint();
-    paint.setColor(borderColor);
     paint.setStyle(Paint.Style.STROKE);
-    paint.setStrokeWidth(borderSize);
+
+    if(borderSize > 0 && borderColor != Color.TRANSPARENT) {
+      paint.setColor(borderColor);
+      paint.setStrokeWidth(borderSize);
+    }else {
+        paint.setColor(Color.TRANSPARENT);
+        paint.setStrokeWidth(0);
+    }
     paint.setAntiAlias(true);
 
     Canvas canvas = new Canvas(bitmap);

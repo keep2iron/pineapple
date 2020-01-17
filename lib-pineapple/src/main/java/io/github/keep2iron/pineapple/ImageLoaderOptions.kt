@@ -37,7 +37,7 @@ class ImageLoaderOptions private constructor(
     /**
      * 图片边界颜色
      */
-    @ColorInt var borderOverlayColor: Int = Color.GRAY,
+    @ColorInt var borderOverlayColor: Int = Color.TRANSPARENT,
     /**
      * 边界大小
      */

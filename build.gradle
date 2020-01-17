@@ -7,11 +7,11 @@ buildscript {
   ext {
     version_group = 'io.github.keep2iron'
 
-    version_fresco = '0.0.2-alpha02'
+    version_fresco = '0.0.2-alpha03'
 
-    version_pineapple = '0.0.2-alpha02'
+    version_pineapple = '0.0.2-alpha03'
 
-    version_glide = '0.0.2-alpha02'
+    version_glide = '0.0.2-alpha03'
   }
 
   dependencies {

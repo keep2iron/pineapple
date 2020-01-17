@@ -60,8 +60,8 @@ class SampleListAdapter(
                     scaleType = ImageLoaderOptions.ScaleType.FIT_XY
                     isLoadGif = true
 
-                    borderSize = 2f
-                    borderOverlayColor = Color.RED
+                    borderSize = 1f
+                    borderOverlayColor = Color.BLACK
 
 //          radiusBottomLeft = 30f
 //          radiusBottomRight = 30f
