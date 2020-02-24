@@ -20,4 +20,4 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
--keepnames class io.github.keep2iron.pineapple.ImageLoaderImpl;
+-keepnames class io.github.keep2iron.pineapple.ImageLoaderImpl
