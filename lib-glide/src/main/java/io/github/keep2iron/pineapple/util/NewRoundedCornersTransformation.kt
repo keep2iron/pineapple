@@ -1,12 +1,7 @@
 package io.github.keep2iron.pineapple.util
 
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.BitmapShader
-import android.graphics.Canvas
-import android.graphics.Paint
-import android.graphics.Path
-import android.graphics.RectF
+import android.graphics.*
 import android.graphics.Shader.TileMode.CLAMP
 import androidx.annotation.ColorInt
 import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool

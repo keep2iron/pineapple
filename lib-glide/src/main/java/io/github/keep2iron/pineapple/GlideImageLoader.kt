@@ -1,6 +1,5 @@
 package io.github.keep2iron.pineapple
 
-import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.graphics.Bitmap
@@ -10,17 +9,12 @@ import android.net.Uri
 import android.util.Log
 import android.util.LruCache
 import android.view.View
-import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.annotation.CallSuper
 import androidx.collection.SparseArrayCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
-import com.bumptech.glide.Glide
-import com.bumptech.glide.GlideBuilder
-import com.bumptech.glide.Registry
-import com.bumptech.glide.RequestBuilder
-import com.bumptech.glide.RequestManager
+import com.bumptech.glide.*
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.MultiTransformation
 import com.bumptech.glide.load.Transformation
@@ -38,15 +32,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
 import com.bumptech.glide.request.transition.DrawableCrossFadeFactory
 import io.github.keep2iron.pineapple.ImageLoaderOptions.ScaleType
-import io.github.keep2iron.pineapple.ImageLoaderOptions.ScaleType.CENTER
-import io.github.keep2iron.pineapple.ImageLoaderOptions.ScaleType.CENTER_CROP
-import io.github.keep2iron.pineapple.ImageLoaderOptions.ScaleType.CENTER_INSIDE
-import io.github.keep2iron.pineapple.ImageLoaderOptions.ScaleType.FIT_CENTER
-import io.github.keep2iron.pineapple.ImageLoaderOptions.ScaleType.FIT_END
-import io.github.keep2iron.pineapple.ImageLoaderOptions.ScaleType.FIT_START
-import io.github.keep2iron.pineapple.ImageLoaderOptions.ScaleType.FIT_XY
-import io.github.keep2iron.pineapple.ImageLoaderOptions.ScaleType.FOCUS_CROP
-import io.github.keep2iron.pineapple.ImageLoaderOptions.ScaleType.MATRIX
+import io.github.keep2iron.pineapple.ImageLoaderOptions.ScaleType.*
 import io.github.keep2iron.pineapple.util.CropCircleWithBorderTransformation
 import io.github.keep2iron.pineapple.util.NewRoundedCornersTransformation
 import io.github.keep2iron.pineapple.util.SupportRSBlurTransformation

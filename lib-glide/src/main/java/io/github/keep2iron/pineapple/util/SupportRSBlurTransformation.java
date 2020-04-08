@@ -21,11 +21,15 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.os.Build;
+
 import androidx.annotation.NonNull;
+
 import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
+
+import java.security.MessageDigest;
+
 import io.github.keep2iron.pineapple.internal.FastBlur;
 import io.github.keep2iron.pineapple.internal.RSBlur;
-import java.security.MessageDigest;
 
 public class SupportRSBlurTransformation extends BitmapTransformation {
 

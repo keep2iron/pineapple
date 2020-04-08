@@ -67,7 +67,7 @@ ImageLoaderManager.init(
     ImageLoaderConfig(
         applicationContext,
         maxCacheCount = 300,
-        maxCacheSize = (400 * ByteConstants.MB).toLong()
+        maxCacheSize = 400 * Util.MB
     ),
     defaultImageLoaderOptions = {
         isCircleImage = false

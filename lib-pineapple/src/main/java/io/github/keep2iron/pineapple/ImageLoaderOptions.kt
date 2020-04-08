@@ -93,12 +93,12 @@ class ImageLoaderOptions private constructor(
     /**
      * 当图片被设置时触发监听
      */
-    var onFinalImageSetListener: ((width: Int, height: Int) -> Util)? = null,
+    var onFinalImageSetListener: ((width: Int, height: Int) -> Unit)? = null,
 
     /**
      * 当图片加载失败
      */
-    var onImageFailure: (() -> Util)? = null,
+    var onImageFailure: (() -> Unit)? = null,
 
     /**
      * 高斯模糊的迭代次数,次数越高越魔性
