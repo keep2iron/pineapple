@@ -23,6 +23,17 @@ android {
   dataBinding {
     enabled true
   }
+
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_1_8
+    targetCompatibility JavaVersion.VERSION_1_8
+  }
+}
+
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+  kotlinOptions {
+    jvmTarget = "1.8"
+  }
 }
 
 dependencies {
@@ -33,14 +44,16 @@ dependencies {
   implementation deps.support.recyclerview
 
 //  implementation project(':lib-fresco')
-  implementation deps.fresco
-  implementation deps.fresco_gif
+//  implementation deps.fresco
+//  implementation deps.fresco_gif
 
 //  implementation project(':lib-glide')
-  implementation('io.github.keep2iron:pineapple-fresco:0.0.2')
-  implementation('io.github.keep2iron:pineapple-core:0.0.2')
-//  implementation 'com.github.bumptech.glide:glide:4.10.0'
-//  kapt 'com.github.bumptech.glide:compiler:4.10.0'
+//  implementation 'com.github.bumptech.glide:glide:4.11.0'
+//  kapt 'com.github.bumptech.glide:compiler:4.11.0'
+
+  implementation project(':lib-coil')
+  implementation 'io.coil-kt:coil-gif:0.11.0'
+  implementation 'io.coil-kt:coil-svg:0.11.0'
 
   testImplementation 'junit:junit:4.12'
   androidTestImplementation 'androidx.test:runner:1.1.0'

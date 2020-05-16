@@ -1,0 +1,50 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+if (MAVEN_LOCAL.toBoolean()) {
+  apply plugin: 'maven'
+} else {
+  apply plugin: 'com.novoda.bintray-release'
+}
+
+android {
+  compileSdkVersion versions.build.target_sdk
+  buildToolsVersion versions.build.build_tools
+
+  defaultConfig {
+    minSdkVersion 15
+    targetSdkVersion versions.build.target_sdk
+
+    versionCode 1
+    versionName "1.0"
+
+    consumerProguardFiles 'proguard-rules.pro'
+  }
+
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_1_8
+    targetCompatibility JavaVersion.VERSION_1_8
+  }
+}
+
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+  kotlinOptions {
+    jvmTarget = "1.8"
+  }
+}
+
+dependencies {
+  implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+  implementation deps.support.annotations
+  implementation deps.support.app_compat
+  implementation 'androidx.core:core-ktx:1.2.0'
+
+  implementation 'io.coil-kt:coil-base:0.11.0'
+  compileOnly 'io.coil-kt:coil-gif:0.11.0'
+  compileOnly 'io.coil-kt:coil-svg:0.11.0'
+  api project(":lib-pineapple")
+
+  testImplementation 'junit:junit:4.12'
+  androidTestImplementation 'androidx.test.ext:junit:1.1.1'
+  androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+}

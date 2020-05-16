@@ -39,21 +39,21 @@ public class CropCircleWithBorderTransformation extends BitmapTransformation {
     Paint paint = new Paint();
     paint.setStyle(Paint.Style.STROKE);
 
-    if(borderSize > 0 && borderColor != Color.TRANSPARENT) {
+    if (borderSize > 0 && borderColor != Color.TRANSPARENT) {
       paint.setColor(borderColor);
       paint.setStrokeWidth(borderSize);
-    }else {
-        paint.setColor(Color.TRANSPARENT);
-        paint.setStrokeWidth(0);
+    } else {
+      paint.setColor(Color.TRANSPARENT);
+      paint.setStrokeWidth(0);
     }
     paint.setAntiAlias(true);
 
     Canvas canvas = new Canvas(bitmap);
     canvas.drawCircle(
-        outWidth / 2f,
-        outHeight / 2f,
-        Math.max(outWidth, outHeight) / 2f - borderSize / 2f,
-        paint
+      outWidth / 2f,
+      outHeight / 2f,
+      Math.max(outWidth, outHeight) / 2f - borderSize / 2f,
+      paint
     );
 
     return bitmap;
@@ -67,8 +67,8 @@ public class CropCircleWithBorderTransformation extends BitmapTransformation {
   @Override
   public boolean equals(Object o) {
     return o instanceof CropCircleWithBorderTransformation &&
-        ((CropCircleWithBorderTransformation) o).borderSize == borderSize &&
-        ((CropCircleWithBorderTransformation) o).borderColor == borderColor;
+      ((CropCircleWithBorderTransformation) o).borderSize == borderSize &&
+      ((CropCircleWithBorderTransformation) o).borderColor == borderColor;
   }
 
   @Override

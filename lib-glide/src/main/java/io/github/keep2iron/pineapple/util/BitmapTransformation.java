@@ -20,20 +20,20 @@ public abstract class BitmapTransformation implements Transformation<Bitmap> {
   @NonNull
   @Override
   public final Resource<Bitmap> transform(@NonNull Context context,
-      @NonNull Resource<Bitmap> resource,
-      int outWidth, int outHeight) {
+                                          @NonNull Resource<Bitmap> resource,
+                                          int outWidth, int outHeight) {
     if (!Util.isValidDimensions(outWidth, outHeight)) {
       throw new IllegalArgumentException(
-          "Cannot apply transformation on width: " + outWidth + " or height: " + outHeight
-              + " less than or equal to zero and not Target.SIZE_ORIGINAL");
+        "Cannot apply transformation on width: " + outWidth + " or height: " + outHeight
+          + " less than or equal to zero and not Target.SIZE_ORIGINAL");
     }
     BitmapPool bitmapPool = Glide.get(context).getBitmapPool();
     Bitmap toTransform = resource.get();
     int targetWidth = outWidth == Target.SIZE_ORIGINAL ? toTransform.getWidth() : outWidth;
     int targetHeight = outHeight == Target.SIZE_ORIGINAL ? toTransform.getHeight() : outHeight;
     Bitmap transformed =
-        transform(context.getApplicationContext(), bitmapPool, toTransform, targetWidth,
-            targetHeight);
+      transform(context.getApplicationContext(), bitmapPool, toTransform, targetWidth,
+        targetHeight);
 
     final Resource<Bitmap> result;
     if (toTransform.equals(transformed)) {
@@ -49,7 +49,7 @@ public abstract class BitmapTransformation implements Transformation<Bitmap> {
   }
 
   protected abstract Bitmap transform(@NonNull Context context, @NonNull BitmapPool pool,
-      @NonNull Bitmap toTransform, int outWidth, int outHeight);
+                                      @NonNull Bitmap toTransform, int outWidth, int outHeight);
 
   @Override
   public abstract void updateDiskCacheKey(@NonNull MessageDigest messageDigest);

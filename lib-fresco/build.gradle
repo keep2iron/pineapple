@@ -30,10 +30,12 @@ dependencies {
   implementation fileTree(dir: 'libs', include: ['*.jar'])
 
   implementation deps.kotlin.stdlib_jdk7
-  compileOnly deps.fresco
   implementation deps.support.annotations
-  api project(":lib-pineapple")
+
+  compileOnly deps.fresco
   compileOnly deps.fresco_gif
+
+  api project(":lib-pineapple")
 
   testImplementation 'junit:junit:4.12'
   androidTestImplementation 'androidx.test:runner:1.1.0'

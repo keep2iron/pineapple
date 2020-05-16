@@ -11,6 +11,7 @@ class ScreenDensityModule {
   companion object {
     @JvmField
     var sNonCompatDensity: Float = 0f
+
     @JvmField
     var sNonCompatScaleDensity: Float = 0f
   }
@@ -38,7 +39,7 @@ class ScreenDensityModule {
         setCustomDensity(activity, activity.application)
         if (activity is androidx.fragment.app.FragmentActivity) {
           activity.supportFragmentManager.registerFragmentLifecycleCallbacks(
-              fragmentLifeCycleListener, true
+            fragmentLifeCycleListener, true
           )
         }
       }
@@ -68,7 +69,7 @@ class ScreenDensityModule {
       override fun onActivityDestroyed(activity: Activity) {
         if (activity is androidx.fragment.app.FragmentActivity) {
           activity.supportFragmentManager.unregisterFragmentLifecycleCallbacks(
-              fragmentLifeCycleListener
+            fragmentLifeCycleListener
           )
         }
       }

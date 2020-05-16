@@ -7,7 +7,7 @@ class ImageLoaderConfig(
   var context: Context,
 
   /**
-   * 最大缓存数量
+   * 最大缓存数量 fresco有效
    */
   var maxCacheCount: Int = 200,
 

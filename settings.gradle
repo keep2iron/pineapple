@@ -1,1 +1,2 @@
 include ':app', ':lib-pineapple', ':lib-glide', ':lib-fresco'
+include ':lib-coil'

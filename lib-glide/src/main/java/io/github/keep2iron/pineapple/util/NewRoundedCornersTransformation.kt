@@ -52,9 +52,9 @@ class NewRoundedCornersTransformation(
   private fun drawRoundRect(canvas: Canvas, bitmapPaint: Paint, width: Float, height: Float) {
     val path = composeRoundedRectPath(
       RectF(0f, 0f, width, height),
-      topLeftRadius ,
+      topLeftRadius,
       topRightRadius,
-      bottomRightRadius ,
+      bottomRightRadius,
       bottomLeftRadius
     )
     canvas.drawPath(
@@ -67,35 +67,17 @@ class NewRoundedCornersTransformation(
     }
   }
 
-  fun composeRoundedRectPath(
+  private fun composeRoundedRectPath(
     rect: RectF,
     topLeftDiameter: Float,
     topRightDiameter: Float,
     bottomRightDiameter: Float,
     bottomLeftDiameter: Float
   ): Path {
-    var varTopLeftDiameter = topLeftDiameter
-    var varTopRightDiameter = topRightDiameter
-    var varBottomRightDiameter = bottomRightDiameter
-    var varBottomLeftDiameter = bottomLeftDiameter
-    val path = Path()
-    varTopLeftDiameter = if (varTopLeftDiameter < 0) 0f else varTopLeftDiameter
-    varTopRightDiameter = if (varTopRightDiameter < 0) 0f else varTopRightDiameter
-    varBottomLeftDiameter = if (varBottomLeftDiameter < 0) 0f else varBottomLeftDiameter
-    varBottomRightDiameter = if (varBottomRightDiameter < 0) 0f else varBottomRightDiameter
+    val radii = floatArrayOf(topLeftDiameter, topLeftDiameter, topRightDiameter, topRightDiameter,
+      bottomRightDiameter, bottomRightDiameter, bottomRightDiameter, bottomRightDiameter)
 
-    path.moveTo(rect.left + varTopLeftDiameter, rect.top)
-    path.lineTo(rect.right - varTopRightDiameter, rect.top)
-    path.quadTo(rect.right, rect.top, rect.right, rect.top + varTopRightDiameter)
-    path.lineTo(rect.right, rect.bottom - varBottomRightDiameter)
-    path.quadTo(rect.right, rect.bottom, rect.right - varBottomRightDiameter, rect.bottom)
-    path.lineTo(rect.left + varBottomLeftDiameter, rect.bottom)
-    path.quadTo(rect.left, rect.bottom, rect.left, rect.bottom - varBottomLeftDiameter)
-    path.lineTo(rect.left, rect.top + varTopLeftDiameter)
-    path.quadTo(rect.left, rect.top, rect.left + varTopLeftDiameter, rect.top)
-    path.close()
-
-    return path
+    return  Path().apply { addRoundRect(rect, radii, Path.Direction.CW) }
   }
 
   override fun updateDiskCacheKey(messageDigest: MessageDigest) {

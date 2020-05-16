@@ -10,11 +10,11 @@ import io.github.keep2iron.pineapple.MiddlewareView
 
 class ShareElementActivity : AppCompatActivity() {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_share_element)
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    setContentView(R.layout.activity_share_element)
 
-        val imageView = findViewById<MiddlewareView>(R.id.imageView)
+    val imageView = findViewById<MiddlewareView>(R.id.imageView)
 
 //    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 //      window.sharedElementEnterTransition = DraweeTransition.createTransitionSet(
@@ -28,16 +28,16 @@ class ShareElementActivity : AppCompatActivity() {
 //      imageView.transitionName = "imageView"
 //    }
 
-        val url = intent.getStringExtra("url")
-        ImageLoaderManager.getInstance()
-            .showImageView(
-                imageView, url
-            ) {
-                isCircleImage = false
-                scaleType = ImageLoaderOptions.ScaleType.FIT_CENTER
-                setPlaceHolderRes(this@ShareElementActivity, R.drawable.ic_launcher_background)
-                isLoadGif = true
-            }
-    }
+    val url = intent.getStringExtra("url")
+    ImageLoaderManager.getInstance()
+      .showImageView(
+        imageView, url
+      ) {
+        isCircleImage = false
+        scaleType = ImageLoaderOptions.ScaleType.FIT_CENTER
+        setPlaceHolderRes(this@ShareElementActivity, R.drawable.ic_launcher_background)
+        isLoadGif = true
+      }
+  }
 
 }

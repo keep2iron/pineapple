@@ -347,7 +347,7 @@ class ImageLoaderImpl : ImageLoader {
     if (options.placeHolder != null) {
       hierarchy.setPlaceholderImage(options.placeHolder)
     }
-    if(options.errorHolder != null){
+    if (options.errorHolder != null) {
       hierarchy.setFailureImage(options.errorHolder)
     }
   }
