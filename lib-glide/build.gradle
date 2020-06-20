@@ -12,7 +12,7 @@ android {
   buildToolsVersion versions.build.build_tools
 
   defaultConfig {
-    minSdkVersion 15
+    minSdkVersion 17
     targetSdkVersion versions.build.target_sdk
 
 //    renderscriptTargetApi versions.build.target_sdk

@@ -1,5 +1,6 @@
 package io.github.keep2iron.pineapple
 
+import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.graphics.Bitmap
@@ -303,19 +304,23 @@ class ImageLoaderImpl : ImageLoader {
   ) {
     val imageOptions = getImageOptions(Uri.parse(url), options)
 
-    showImageInternal(
-      setGlideInternal(imageView, imageOptions).load(url)
-      , imageView, imageOptions
-    )
+    val requestManager = setGlideInternal(imageView, imageOptions)
+
+    if (requestManager != null) {
+      showImageInternal(
+        requestManager.load(url)
+        , imageView, imageOptions
+      )
+    }
   }
 
   private fun setGlideInternal(
     imageView: View,
     imageOptions: ImageLoaderOptions
-  ): RequestManager {
+  ): RequestManager? {
 
     val lifecycleOwner = imageOptions.lifecycleOwner
-    val requestManager = when {
+    val requestManager: RequestManager? = when {
       lifecycleOwner != null && lifecycleOwner is FragmentActivity -> {
         Glide.with(lifecycleOwner)
       }
@@ -323,9 +328,20 @@ class ImageLoaderImpl : ImageLoader {
         Glide.with(lifecycleOwner)
       }
       else -> {
-        Glide.with(imageView)
+        val imageViewContext = imageView.context
+        val requestManager = if (imageViewContext is Activity) {
+          if (imageViewContext.isFinishing || imageViewContext.isDestroyed) null else Glide.with(
+            imageViewContext
+          )
+        } else {
+          Glide.with(imageViewContext)
+        }
+
+        requestManager
       }
     }
+
+    if (requestManager == null) return requestManager
 
     return requestManager
       .apply {
@@ -358,10 +374,14 @@ class ImageLoaderImpl : ImageLoader {
   ) {
     val imageOptions = getImageOptions(uri, options)
 
-    showImageInternal(
-      setGlideInternal(imageView, imageOptions).load(uri)
-      , imageView, imageOptions
-    )
+    val requestManager = setGlideInternal(imageView, imageOptions)
+
+    if (requestManager != null) {
+      showImageInternal(
+        requestManager.load(uri)
+        , imageView, imageOptions
+      )
+    }
   }
 
   override fun showImageView(
@@ -373,11 +393,15 @@ class ImageLoaderImpl : ImageLoader {
     val optionsKey = Uri.parse("res://$resId")
     val imageOptions = getImageOptions(optionsKey, options)
 
-    showImageInternal(
-      setGlideInternal(imageView, imageOptions).load(resId),
-      imageView,
-      imageOptions
-    )
+    val requestManager = setGlideInternal(imageView, imageOptions)
+
+    if (requestManager != null) {
+      showImageInternal(
+        requestManager.load(resId),
+        imageView,
+        imageOptions
+      )
+    }
   }
 
   override fun getBitmap(
